@@ -11,7 +11,7 @@ public class Node {
         }
         return null;
     }
-    
+
     public int size(){
         return outgoing_flights.size();
     }
