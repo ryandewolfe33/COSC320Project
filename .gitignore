@@ -27,6 +27,7 @@ dist/
 
 # JetBrains IDE
 .idea/
+*.iml
 
 # Eclipse
 /bin
