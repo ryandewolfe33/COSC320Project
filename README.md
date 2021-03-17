@@ -4,7 +4,7 @@
 Include the details of the dataset.
 https://data.world/hoytick/2017-jan-ontimeflightdata-usa
 
-This dataset contains flight inofrmation for 450000 domestic US flights from 2017. The relevant data fields are year, month, dayofmonth, carrier, flightnum, originairportid, origincityname, destinationairportid, destinationairportid, deptime, arrtime. There is no ticketprice data feild in this dataset, but using the distance feild, we created reasonable estimates for the price. From the site (Rometorio)[https://www.rome2rio.com/blog/2013/01/02/170779446/], it costs about $50 + 11 cents per mile for a ticket. So, we can get a ticket cost = 50 + (distance)(0.11)(0.02 x (Random.nextGaussian+1) ).  Every flight will cost a $50 plus a normally distributed number with mean 1, std 0.02 around 11 cents per mile.
+This dataset contains flight inofrmation for 450000 domestic US flights from 2017. The relevant data fields are year, month, dayofmonth, carrier, flightnum, originairportid, origincityname, destinationairportid, destinationairportid, deptime, arrtime. There is no ticketprice data feild in this dataset, but using the distance feild, we created reasonable estimates for the price. From the site (Rometorio)[https://www.rome2rio.com/blog/2013/01/02/170779446/], it costs about $50 + 11 cents per mile for a ticket. So, we can get a ```ticket cost = 50 + (distance)(0.11)(0.02 x (Random.nextGaussian+1) )```.  Every flight will cost a $50 plus a normally distributed number with mean 1, std 0.02 around 11 cents per mile.
 
 
 ## Implementation. 
