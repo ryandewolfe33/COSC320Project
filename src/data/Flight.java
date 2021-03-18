@@ -1,5 +1,4 @@
 import Random;
-import 
 
 package data;
 
@@ -13,11 +12,11 @@ public class Flight implements Compareable<Flight>{
 
     public Flight(String[] dataRow){
         this.originAirportId = dataRow[11];
-        this.departureDateTime = new SimpleDateFormat(dataRow[0] +"."+ dataRow[2] +"."+ dataRow[3] +" "+
-                                                      dataRow[30].substring(0,2) + ":" + dataRow[30].substring(2,4));
+        this.departureDateTime = new Date(dataRow[0], dataRow[2], dataRow[3], dataRow[30].substring(0,2), dataRow[30].substring(2,4));
+
         this.destinationAirportId = dataRow[20];
-        this.arrivalDateTime = new SimpleDateFormat(dataRow[0] +"."+ dataRow[2] +"."+ dataRow[3] +" "+
-                dataRow[41].substring(0,2) + ":" + dataRow[41].substring(2,4));
+        this.arrivalDateTime = new Date(dataRow[0], dataRow[2], dataRow[3], dataRow[41].substring(0,2), dataRow[41].substring(2,4));
+
         this.ticketPrice = makeTicketPrice(Integer.parseInt(dataRow[54]));
         this.flightName = dataRow[8] + dataRow[10] + " on " + this.departureDateTime.
     }
