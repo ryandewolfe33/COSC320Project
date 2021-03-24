@@ -5,9 +5,9 @@ package data;
 public class Flight implements Compareable<Flight>{
     private String flightName;
     private String originAirportId;
-    private SimpleDateFormat departureDateTime;
+    private Date departureDateTime;
     private String destinationAirportId;
-    private SimpleDateFormat arrivalDateTime;
+    private Date arrivalDateTime;
     private double ticketPrice;
 
     public Flight(String[] dataRow){
@@ -27,6 +27,16 @@ public class Flight implements Compareable<Flight>{
         if(normalDistribution<0)
             normalDistribution = 1;
         return 50+0.11*distanceInMiles*normalDistribution;
+    }
+
+    public int compareTo(Flight other){
+        if(this.originAirportId == other.originAirportId)
+            if(this.departureDateTime.befor(other.departureDateTime))
+                return -1;
+            else
+                return 1;
+        else
+            return (this.originAirportId < other.originAirportId)? -1:1;
     }
 
 
