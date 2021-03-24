@@ -11,6 +11,7 @@ public class Flight implements Compareable<Flight>{
     private double ticketPrice;
     private int flightTime;
 
+
     public Flight(String[] dataRow){
         this.originAirportId = dataRow[11];
         this.departureDateTime = new Date(dataRow[0], dataRow[2], dataRow[3], dataRow[30].substring(0,2), dataRow[30].substring(2,4));
@@ -23,6 +24,19 @@ public class Flight implements Compareable<Flight>{
         this.flightName = dataRow[8] + dataRow[10] + " on " + this.departureDateTime.
     }
 
+    public String getOriginAirportId() {
+        return originAirportId;
+    }
+    public Date getDepartureDateTime() {
+        return departureDateTime;
+    }
+    public String getDestinationAirportId() {
+        return destinationAirportId;
+    }
+    public Date getArrivalDateTime() {
+        return arrivalDateTime;
+    }
+    
     private double makeTicketPrice(int distanceInMiles){
         Random random = new Random();
         double normalDistribution = (0.02*randomndom.getGaussian())+1  //A variable normally distributed about 1 with std 0.02
