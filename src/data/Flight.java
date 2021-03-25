@@ -4,13 +4,13 @@ import java.util.Calendar;
 import java.util.Random;
 
 public class Flight implements Comparable<Flight>{
-    private String flightName;
-    private int originAirportId;
-    private Calendar departureDateTime;
-    private int destinationAirportId;
-    private Calendar arrivalDateTime;
-    private double ticketPrice;
-    private int flightTime;
+    private final String flightName;
+    private final int originAirportId;
+    private final Calendar departureDateTime;
+    private final int destinationAirportId;
+    private final Calendar arrivalDateTime;
+    private final double ticketPrice;
+    private final int flightTime;
 
 
     public Flight(String[] dataRow){
