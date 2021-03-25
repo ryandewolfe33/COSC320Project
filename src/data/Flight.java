@@ -1,6 +1,4 @@
 package data;
-import java.util.Calendar;
-import java.util.Random;
 
 public class Flight implements Comparable<Flight>{
     private String flightName;
@@ -34,16 +32,12 @@ public class Flight implements Comparable<Flight>{
         this.flightName = dataRow[8] + dataRow[10] + " on " + this.departureDateTime.get(Calendar.DATE);
     }
 
-    public int getOriginAirportId() {
         return originAirportId;
     }
-    public Calendar getDepartureDateTime() {
         return departureDateTime;
     }
-    public int getDestinationAirportId() {
         return destinationAirportId;
     }
-    public Calendar getArrivalDateTime() {
         return arrivalDateTime;
     }
     
@@ -59,13 +53,10 @@ public class Flight implements Comparable<Flight>{
     }
     public double getTicketPrice(){ return this.ticketPrice;}
 
-    //flightTime in minutes
     private int makeFlightTime(){
         int flightTime = 0;
-        flightTime = (int)((this.arrivalDateTime.getTimeInMillis() - this.departureDateTime.getTimeInMillis())%60000);
         return flightTime;
     }
-    public int getFlightTime(){return this.flightTime;}
 
 
     //Flights will be ordered lowest to highest originAirportId, then by departureTime
