@@ -1,5 +1,8 @@
 package data;
 
+import java.util.Calendar;
+import java.util.Random;
+
 public class Flight implements Comparable<Flight>{
     private String flightName;
     private int originAirportId;
@@ -32,12 +35,19 @@ public class Flight implements Comparable<Flight>{
         this.flightName = dataRow[8] + dataRow[10] + " on " + this.departureDateTime.get(Calendar.DATE);
     }
 
+    public int getOriginAirportId(){
         return originAirportId;
     }
+
+    public Calendar getDepartureDateTime(){
         return departureDateTime;
     }
+
+    public int getDestinationAirportId(){
         return destinationAirportId;
     }
+    
+    public Calendar getArrivalDateTime(){
         return arrivalDateTime;
     }
     
@@ -76,6 +86,6 @@ public class Flight implements Comparable<Flight>{
                 " and arriving at " + this.destinationAirportId + " at " + " " +
                 this.arrivalDateTime.get(Calendar.HOUR_OF_DAY) + ":" + this.arrivalDateTime.get(Calendar.MINUTE);
     }
+        }
 
 
-}
