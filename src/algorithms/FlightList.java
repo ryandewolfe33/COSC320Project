@@ -1,9 +1,9 @@
+package algorithms;
+
 import data.Flight;
 import java.util.HashMap;
 import java.util.Date;
 import java.util.ArrayList;
-
-package algorithms;
 
 public class FlightList implements Accessor {
 
