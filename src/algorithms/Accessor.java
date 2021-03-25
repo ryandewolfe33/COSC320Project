@@ -1,3 +1,5 @@
+package algorithms;
+
 import data.Flight;
 import java.util.ArrayList;
 
