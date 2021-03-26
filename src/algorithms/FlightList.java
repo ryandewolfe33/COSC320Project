@@ -1,10 +1,9 @@
 package algorithms;
 
 import data.Flight;
-
 import java.util.TreeSet;
-import java.util.HashMap;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.ArrayList;
 
 public class FlightList implements Accessor {
@@ -43,7 +42,7 @@ public class FlightList implements Accessor {
     }
 
     public void buildMapFromArray(Flight[] fly) {
-        this.flights = new HashMap<Integer, TreeSet<Flight>>(); //String = departure airport ID
+        this.flights = new HashMap<>(); //String = departure airport ID
         for (Flight i : fly) {
             if (i.getDepartureDateTime().after(startDate) || startDate == null) {
                 if (flights.get(i.getOriginAirportId()) != null) {
@@ -51,7 +50,7 @@ public class FlightList implements Accessor {
                     temp.add(i);
                     flights.put(i.getOriginAirportId(), temp);
                 } else {
-                    TreeSet<Flight> temp = new TreeSet<Flight>();
+                    TreeSet<Flight> temp = new TreeSet<>();
                     temp.add(i);
                     flights.put(i.getOriginAirportId(), temp);
                 }
@@ -62,15 +61,11 @@ public class FlightList implements Accessor {
     public ArrayList<Flight> getNextFlights(Flight arrival) {
         int arrID = arrival.getDestinationAirportId();
         Calendar arrTime = arrival.getArrivalDateTime();
+        arrival.setDepartureDateTime(arrTime);
+        arrival.setOriginAirportId(arrID);
         TreeSet<Flight> relevant = flights.get(arrID);
-        ArrayList<Flight> connections = new ArrayList<Flight>();
-        for (int i = 0; i < relevant.size(); i++) {
-            if (relevant.get(i).getDepartureDateTime().after(arrTime))   //if sorted by time (desc), add all values until this becomes false
-                connections.add(relevant.get(i));
-            else if (relevant.get(i) == null)
-                break;
-        }
-        return connections;
+        TreeSet<Flight> tail_set = (TreeSet<Flight>) relevant.tailSet(arrival);
+        return new ArrayList<>(tail_set);
     }
 
 }
