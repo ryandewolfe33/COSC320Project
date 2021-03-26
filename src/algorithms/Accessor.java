@@ -11,5 +11,7 @@ import java.util.TreeSet;
 interface Accessor {
     void buildMapFromArray(Flight[] fly, LocalDateTime startDate);
 
+    TreeSet<Flight> getAllFlights(int airport_id);
+
     ArrayList<Flight> getNextFlights(Flight arrival);
 }
