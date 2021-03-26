@@ -85,11 +85,12 @@ public class Flight implements Comparable<Flight>{
 
     //Flights will be ordered lowest to highest originAirportId, then by departureTime
     public int compareTo(Flight other) {
+        /* todo: uncomment this code when the heuristics are implemented
         if (this.originAirportId == other.originAirportId) {
             return departureDateTime.compareTo(other.departureDateTime);
         }
         return arrivalDateTime.compareTo(other.departureDateTime);/**/
-        //return departureDateTime.compareTo(other.departureDateTime);
+        return departureDateTime.compareTo(other.departureDateTime);
     }
 
     public String toString(){
@@ -97,6 +98,28 @@ public class Flight implements Comparable<Flight>{
                 this.departureDateTime.getHour() + ":" + this.departureDateTime.getMinute() +
                 " and arriving at " + this.destinationAirportId + " at " + " " +
                 this.arrivalDateTime.getHour() + ":" + this.arrivalDateTime.getMinute();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Flight flight = (Flight) o;
+        return originAirportId == flight.originAirportId
+                && destinationAirportId == flight.destinationAirportId
+                && departureDateTime.equals(flight.departureDateTime)
+                && arrivalDateTime.equals(flight.arrivalDateTime);
+    }
+
+    @Override
+    public int hashCode() {
+        //todo: implement hashCode() and not use generated method
+        int result = originAirportId;
+        result = 31 * result + destinationAirportId;
+        result = 31 * result + departureDateTime.hashCode();
+        result = 31 * result + arrivalDateTime.hashCode();
+        return result;
     }
 }
 
