@@ -1,18 +1,19 @@
 package data;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.time.chrono.ChronoLocalDateTime;
 import java.util.TreeSet;
 import java.util.HashMap;
 import java.util.ArrayList;
 
-public class FlightList implements Accessor {
+public class FlightList {
 
     private HashMap<Integer, TreeSet<Flight>> flights;
 
-    public void buildMapFromArray(Flight[] fly, LocalDateTime startDate) {
+    public void buildMapFromArray(Flight[] fly, LocalDate startDate) {
         this.flights = new HashMap<>(); //String = departure airport ID
         for (Flight flight : fly) {
-            if (startDate == null || flight.getDepartureDateTime().isAfter(startDate)) {
+            if (startDate == null || flight.getDepartureDateTime().isAfter(ChronoLocalDateTime.from(startDate))) {
                 TreeSet<Flight> airport_flights = flights.computeIfAbsent(flight.getOriginAirportId(), k -> new TreeSet<>());
                 airport_flights.add(flight);
             }
