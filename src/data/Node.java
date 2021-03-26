@@ -3,7 +3,7 @@ package data;
 import java.util.ArrayList;
 
 public class Node {
-    private ArrayList<Flight> outgoing_flights = new ArrayList<>();
+    private ArrayList<Flight> outgoing_flights = null;
 
     public Flight get(int index){
         if(index < outgoing_flights.size() && index > 0) {
