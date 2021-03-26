@@ -1,44 +1,77 @@
 package data;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Random;
 
 public class Flight implements Comparable<Flight>{
-    private static final DateTimeFormatter departure_format = DateTimeFormatter.ofPattern("yyyy-MM-ddHHmm");
-    private static final DateTimeFormatter time_format = DateTimeFormatter.ofPattern("HHmm");
+    private static final DateTimeFormatter departure_format = DateTimeFormatter.ofPattern("yyyy-MM-dd Hmm");
+    private static final DateTimeFormatter time_format = DateTimeFormatter.ofPattern("Hmm");
 
-    private final String flightName;
-    private final double ticketPrice;
-    private final int flightTime;
-    private final int distance;
+    private String flightName;
+    private double ticketPrice;
+    private int flightTime;
+    private int distance;
 
-    private final int originAirportId;
-    private final int destinationAirportId;
+    private int originAirportId;
+    private int destinationAirportId;
 
     private LocalDateTime departureDateTime;
-    private final LocalDateTime arrivalDateTime;
+    private LocalDateTime arrivalDateTime;
 
 
     public Flight(String[] dataRow){
-        originAirportId = Integer.parseInt(dataRow[11]);
-        destinationAirportId = Integer.parseInt(dataRow[20]);
+        String originId = dataRow[11];
+        String destinId = dataRow[20];
+        String deptDate = dataRow[5];
+        StringBuffer deptTime = new StringBuffer(dataRow[29]);
+        StringBuffer arrTime = new StringBuffer(dataRow[40]);
+        int required_length = 3;
+        int delta = required_length - deptTime.length();
+        if(delta > 0){
+            deptTime.insert(0,delta == 2 ? "00" : "0");
+        }
+        deptTime.insert(0,deptDate + " ");
+        delta = required_length - arrTime.length();
+        if(delta > 0){
+            arrTime.insert(0,delta == 2 ? "00" : "0");
+        }
+        String fliTime = dataRow[51];
+        String dist = dataRow[54];
+        String fliName = dataRow[8] + dataRow[10];
+        try {
+            if (false) {
+                System.out.println(fliName);
+                System.out.printf("origin ID: %s\n", originId);
+                System.out.printf("destination ID: %s\n", destinId);
+                System.out.printf("departure time: %s\n", deptTime.toString());
+                System.out.printf("arrival time: %s\n", arrTime.toString());
+                System.out.printf("flight time: %s\n", fliTime);
+                System.out.printf("distance: %s\n", dist);
+            }
+            originAirportId = Integer.parseInt(originId);
+            destinationAirportId = Integer.parseInt(destinId);
 
-        departureDateTime = LocalDateTime.parse(dataRow[5]+dataRow[30] , departure_format);
-        flightTime = Integer.parseInt(dataRow[41]);
-        int airtime_hours = flightTime / 60;
-        int airtime_minutes = flightTime - (airtime_hours * 60);
-        LocalDateTime arrival_time = departureDateTime.plusHours(airtime_hours).plusMinutes(airtime_minutes);
-        LocalDateTime local_arrival_time = LocalDateTime.parse(dataRow[41],time_format);
-        int timezone_offset_hours = local_arrival_time.getHour() - arrival_time.getHour();
-        int timezone_offset_minutes = local_arrival_time.getMinute() - arrival_time.getMinute();
-        arrivalDateTime = arrival_time
-                .plusHours(timezone_offset_hours).plusMinutes(timezone_offset_minutes)
-                .withHour(local_arrival_time.getHour()).withMinute(local_arrival_time.getMinute());
+            departureDateTime = LocalDateTime.parse(deptTime, departure_format);
+            flightTime = Integer.parseInt(fliTime);
+            int airtime_hours = flightTime / 60;
+            int airtime_minutes = flightTime - (airtime_hours * 60);
+            LocalDateTime arrival_time = departureDateTime.plusHours(airtime_hours).plusMinutes(airtime_minutes);
 
-        distance = Integer.parseInt(dataRow[54]);
-        ticketPrice = makeTicketPrice(distance);
-        flightName = dataRow[8] + dataRow[10] + " on " + departureDateTime.toString();
+            LocalTime local_arrival_time = LocalTime.parse(arrTime, time_format);
+            int timezone_offset_hours = local_arrival_time.getHour() - arrival_time.getHour();
+            int timezone_offset_minutes = local_arrival_time.getMinute() - arrival_time.getMinute();
+            arrivalDateTime = arrival_time
+                    .plusHours(timezone_offset_hours).plusMinutes(timezone_offset_minutes)
+                    .withHour(local_arrival_time.getHour()).withMinute(local_arrival_time.getMinute());
+
+            distance = Integer.parseInt(dist);
+            ticketPrice = makeTicketPrice(distance);
+            flightName = fliName + " on " + departureDateTime.toString();
+        } catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     public Flight(Flight other) {

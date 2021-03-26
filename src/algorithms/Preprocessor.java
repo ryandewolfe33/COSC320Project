@@ -13,11 +13,15 @@ public class Preprocessor {
         ArrayList<Flight> listOfFlights = new ArrayList<Flight>();
         try{
             Scanner forFile=new Scanner(data);
+            forFile.nextLine(); // dataRow indices
+            forFile.nextLine(); // column headings
             while(forFile.hasNextLine()){
                 String row=forFile.nextLine();
                 String[] dataFromRow=row.split(",");
-                Flight addFlight=new Flight(dataFromRow);
-                listOfFlights.add(addFlight);
+                if(!dataFromRow[51].isEmpty()) {
+                    Flight addFlight = new Flight(dataFromRow);
+                    listOfFlights.add(addFlight);
+                }
             }
             forFile.close();
         }
