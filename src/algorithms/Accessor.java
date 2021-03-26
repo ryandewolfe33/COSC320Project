@@ -5,6 +5,7 @@ import data.Flight;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.TreeSet;
 
 interface Accessor {
     public void buildMapFromArray(Flight[] fly);
@@ -15,5 +16,5 @@ interface Accessor {
 
     public Calendar getStartDate();
 
-    public HashMap<Integer, ArrayList<Flight>> getFlightList();
+    public HashMap<Integer, TreeSet<Flight>> getFlightList();
 }
