@@ -1,4 +1,4 @@
-package algorithms;
+package data;
 
 import data.Flight;
 

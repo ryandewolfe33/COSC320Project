@@ -1,10 +1,7 @@
-package algorithms;
-
-import data.Flight;
+package data;
 
 import java.time.LocalDateTime;
 import java.util.TreeSet;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.ArrayList;
 
