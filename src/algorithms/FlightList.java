@@ -43,17 +43,10 @@ public class FlightList implements Accessor {
 
     public void buildMapFromArray(Flight[] fly) {
         this.flights = new HashMap<>(); //String = departure airport ID
-        for (Flight i : fly) {
-            if (i.getDepartureDateTime().after(startDate) || startDate == null) {
-                if (flights.get(i.getOriginAirportId()) != null) {
-                    TreeSet<Flight> temp = flights.get(i.getOriginAirportId());
-                    temp.add(i);
-                    flights.put(i.getOriginAirportId(), temp);
-                } else {
-                    TreeSet<Flight> temp = new TreeSet<>();
-                    temp.add(i);
-                    flights.put(i.getOriginAirportId(), temp);
-                }
+        for (Flight flight : fly) {
+            if (flight.getDepartureDateTime().after(startDate) || startDate == null) {
+                TreeSet<Flight> airport_flights = flights.computeIfAbsent(flight.getOriginAirportId(), k -> new TreeSet<>());
+                airport_flights.add(flight);
             }
         }
     }
