@@ -25,13 +25,13 @@ public class FlightList implements Accessor {
 
     public ArrayList<Flight> getNextFlights(Flight arrival) {
         int arrID = arrival.getDestinationAirportId();
-        /* todo: ensure Flight.compareTo is going to work correctly with the arrivalTime vs departureTime
+        /* todo: ensure Flight.compareTo is going to work correctly with the arrivalTime vs departureTime*/
         Flight copy = new Flight(arrival);
         copy.setDepartureDateTime(copy.getArrivalDateTime());
-         */
+
         TreeSet<Flight> airport = flights.get(arrID);
-        //return new ArrayList<>(airport.tailSet(copy));
-        return new ArrayList<>(airport.tailSet(arrival));
+        return new ArrayList<>(airport.tailSet(copy));
+        //return new ArrayList<>(airport.tailSet(arrival));
     }
 
 }
