@@ -38,9 +38,15 @@ public class Flight implements Comparable<Flight>{
     public int getOriginAirportId(){
         return originAirportId;
     }
+    public void setOriginAirportId(int in){
+        this.originAirportId=in;
+    }
 
     public Calendar getDepartureDateTime(){
         return departureDateTime;
+    }
+    public void setDepartureDateTime(Calendar in){
+        this.departureDateTime=in;
     }
 
     public int getDestinationAirportId(){
