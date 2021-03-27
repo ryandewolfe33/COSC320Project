@@ -16,6 +16,9 @@ public class Main {
     private static FlightList data = new FlightList();
 
     public static void main(String[] args) {
+        // Use this to set the path to the dataset leave date originairportid destinationairportid
+        String userInputsAsString = "C:/users/ryand/CS320files/10000rows_flight_data.csv 2017-02-14 1105703 1104203";
+        args = userInputsAsString.split(" ");
         String dataSetName = "";
         String user_input = "";
         int airport_A_id = 0;
@@ -37,6 +40,7 @@ public class Main {
 
         // todo: ensure path is correct
         File file = new File(dataSetName);
+        long startTime = System.currentTimeMillis();
         data.buildMapFromArray(Objects.requireNonNull(loadFile(file)), start);
         try {
             var path = findPath(airport_A_id, airport_B_id);
@@ -46,6 +50,8 @@ public class Main {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        long endTime = System.currentTimeMillis();
+        System.out.println("The algorithms took " + (endTime - startTime) + " milliseconds");
     }
 
     public static Flight[] loadFile(File data) {
