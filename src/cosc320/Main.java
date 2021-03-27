@@ -15,6 +15,7 @@ import java.time.temporal.ChronoUnit;
 
 public class Main {
     private static FlightList data = new FlightList();
+    private static Boolean heuristic;
 
     public static void main(String[] args) {
         //"dataset/original/On_Time_On_Time_Performance_2017_1.csv"
@@ -24,11 +25,14 @@ public class Main {
         String user_input = "";
         int airport_A_id = 0;
         int airport_B_id = 0;
+        heuristic = false;
         try {
             dataSetName = args[0];
             user_input = args[1];
             airport_A_id = Integer.parseInt(args[2]);
             airport_B_id = Integer.parseInt(args[3]);
+            if (args[4] == "time")
+                heuristic = true;
         } catch (Exception e) {
             System.out.println("Invalid arguments provided");
             e.printStackTrace();
@@ -71,7 +75,7 @@ public class Main {
     public static Flight[] loadFile(File data) {
         ArrayList<Flight> listOfFlights = new ArrayList<Flight>();
         try {
-            BufferedReader in = new BufferedReader(new FileReader(data), (int)data.length());
+            BufferedReader in = new BufferedReader(new FileReader(data), (int) data.length());
             Scanner scanner = new Scanner(in);
             scanner.nextLine(); // dataRow indices
             scanner.nextLine(); // column headings
@@ -96,6 +100,8 @@ public class Main {
         Scanner userParams = new Scanner(System.in);
         System.out.println("Presently, the dataset has American domestic travel only. " +
                 "All airport ID's correspond to an actual american airport.\n" + "INPUTS ARE NOT VALIDATED");
+        System.out.println("Type 'price' to search for the cheapest path or 'time' to find the shortest path");
+        String heuristicSelection = userParams.nextLine();//"time";
         System.out.println("Enter a starting airport ID (seven-digit integer). Example: 1105703");
         String userStartID = userParams.nextLine();//"1105703";
         System.out.println("Enter a destination airport ID (seven digit integer). Example: 1104203");
@@ -103,12 +109,13 @@ public class Main {
         System.out.println("Enter a day(00-30). Our dataset only includes data for the month of January 2017.");
         String userStartDate = "2017-01-" + userParams.nextLine();//"2017-01-03";
         userParams.close();
-        return "dataset/original/On_Time_On_Time_Performance_2017_1.csv " + userStartDate + " " + userStartID + " " + userDestID;
+        return "dataset/original/On_Time_On_Time_Performance_2017_1.csv " + userStartDate + " " + userStartID + " " + userDestID + " " + heuristicSelection;
     }
 
     public static Node findPath(int A, int B, LocalDate start) throws Exception {
         PriorityQueue<Node> open_list = new PriorityQueue<>();
         HashSet<Flight> closed_list = new HashSet<>();
+        long heuristicValue;
         long layover = 0;
 
         Node current_node = new Node(A, null, null, data.getAllFlights(A, start), layover);
@@ -119,18 +126,21 @@ public class Main {
                 // new outgoing flight
                 Flight outgoing_flight = current_node.getNextFlight(i);
                 if (!closed_list.contains(outgoing_flight)) {
-                    if(current_node.getThisFlight() != null) {
+                    if (current_node.getThisFlight() != null) {
                         var edge_A_side = current_node.getThisFlight().getArrivalDateTime();
                         var edge_B_side = outgoing_flight.getDepartureDateTime();
-                        layover = ChronoUnit.MINUTES.between(edge_A_side,edge_B_side);
+                        layover = ChronoUnit.MINUTES.between(edge_A_side, edge_B_side);
                     } else {
                         var edge_A_side = start.atStartOfDay();
                         var edge_B_side = outgoing_flight.getDepartureDateTime();
                         layover = ChronoUnit.MINUTES.between(edge_A_side, edge_B_side);
                     }
-                    long heuristic = layover + outgoing_flight.getFlightTime();
-                    Node n = new Node(outgoing_flight.getDestinationAirportId(), current_node, outgoing_flight, data.getNextFlights(outgoing_flight), heuristic);
-                    // calculate heuristics? or perhaps we should just implement a comparison that does that for us
+                    if (heuristic) {
+                        heuristicValue = layover + outgoing_flight.getFlightTime();
+                    } else {
+                        heuristicValue = (long) outgoing_flight.getTicketPrice();
+                    }
+                    Node n = new Node(outgoing_flight.getDestinationAirportId(), current_node, outgoing_flight, data.getNextFlights(outgoing_flight), heuristicValue);
                     if (!open_list.contains(n)) {
                         open_list.add(n);
                     }
