@@ -7,6 +7,8 @@ import data.Node;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.Period;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
@@ -84,5 +86,8 @@ public class Main {
             }
         } while(current_node.airport_id != B);
         return path;
+    }
+    public static LocalDateTime timeHeuristic(Flight a, Flight b){
+        return a.getArrivalDateTime().minus((b.getArrivalDateTime().getHour()+b.getArrivalDateTime().getMinute());
     }
 }
