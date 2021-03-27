@@ -13,7 +13,7 @@ public class FlightList {
     public void buildMapFromArray(Flight[] fly, LocalDate startDate) {
         this.flights = new HashMap<>(); //String = departure airport ID
         for (Flight flight : fly) {
-            if (startDate == null || flight.getDepartureDateTime().isAfter(ChronoLocalDateTime.from(startDate))) {
+            if (startDate == null || flight.getDepartureDateTime().isAfter(startDate.atStartOfDay())) {
                 TreeSet<Flight> airport_flights = flights.computeIfAbsent(flight.getOriginAirportId(), k -> new TreeSet<>());
                 airport_flights.add(flight);
             }
