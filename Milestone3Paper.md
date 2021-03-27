@@ -4,7 +4,7 @@
 Include the details of the dataset.
 https://data.world/hoytick/2017-jan-ontimeflightdata-usa
 
-This dataset contains flight inofrmation for 450000 domestic US flights from 2017. The relevant data fields are year, month, dayofmonth, carrier, flightnum, originairportid, origincityname, destinationairportid, destinationairportid, deptime, arrtime. There is no ticketprice data feild in this dataset, but using the distance feild, we created reasonable estimates for the price. From the site (Rometorio)[https://www.rome2rio.com/blog/2013/01/02/170779446/], it costs about $50 + 11 cents per mile for a ticket. So, we can get a ticket cost = 50 + (distance)(0.11)(normal distribution).  Every flight will cost a $50 plus a normally distributed number with mean 1, std 0.02 around 11 cents per mile. If the normal distribution returns a negative number replace it with 1.
+This dataset contains flight information for 450000 domestic US flights from 2017. The relevant data fields are year, month, dayofmonth, carrier, flightnum, originairportid, origincityname, destinationairportid, destinationairportid, deptime, arrtime. There is no ticketprice data feild in this dataset, but using the distance feild, we created reasonable estimates for the price. From the site (Rometorio)[https://www.rome2rio.com/blog/2013/01/02/170779446/], it costs about $50 + 11 cents per mile for a ticket. So, we can get a ticket cost = 50 + (distance)(0.11)(normal distribution).  Every flight will cost a $50 plus a normally distributed number with mean 1, std 0.02 around 11 cents per mile. If the normal distribution returns a negative number replace it with 1.
 
 
 ## Implementation. 
@@ -14,14 +14,14 @@ We began by defining a Flight class for each row in our dataset. It contains imp
 As mentioned in our Unexpected Cases, we did not have time to create appropriate samples, so we did not have a range of inputs to test. However, our algorithm did run on the whole dataset in ~2000 milliseconds. which is fairly efficient considering our dataset has 450 thousand entries. We believe that this is on track with the O(nm) curve that we expect our algorithm to approach. Most of the work is done in the graph creation step, with lots of sorted lists all taking O(n log n) time to create and sort.
 
 ## Unexpected Cases/Difficulties. 
-Our dataset had no cost feild. This was resolved by creating a cost function to simulate the cost of tickets. However, due to the inherient properties of random variables, right now any ticket price, however unlikely, could be possible. This was resolved by putting a lower bound on the normal distributions, it cannot be negative. 
+Our dataset had no cost field. This was resolved by creating a cost function to simulate the cost of tickets. However, due to the inherient properties of random variables, right now any ticket price, however unlikely, could be possible. This was resolved by putting a lower bound on the normal distributions, it cannot be negative. 
 
 We had a significant number of rollover error when the flights took off late on one day and landed early on the next. Since our dataset only contains the takeoff date, the algorithm was reading these flights as having ~ -23 hour durations. The presence of negative edges like this will disrupt our algorithm as it allows for negative cycles to exist and the same flight to be taken multiple times. 
 
 Finally, we had lots of trouble making samples of the dataset to use a tests on our algorithm. The fields were often changed in subtle ways that caused errors in our program and we did not have enough time to solve them all. 
 
 ## Task Separation and Responsibilities. 
-Josh - Implement Main and debugging
+Josh - Implement Main, Node and debugging
 Ryan - Implement Flight and debugging
-Mike - Implemented Node
-Liza - Implemented FlightList
+Mike - Implemented FlightList and debugging
+Liza - Data read-in
