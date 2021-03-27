@@ -123,7 +123,7 @@ public class Flight implements Comparable<Flight>{
     }
 
     public String toString(){
-        return String.format("%s {origin: %d; destination: %d; ticket price %f; departure: %s; flight time: %4d}",
+        return String.format("%s {origin: %d; destination: %d; ticket price %6.2f; departure: %s; flight time: %3d minutes}",
                 flightName,
                 originAirportId,
                 destinationAirportId,

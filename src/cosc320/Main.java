@@ -41,7 +41,11 @@ public class Main {
         // todo: ensure path is correct
         File file = new File(dataSetName);
         Benchmarker B = new Benchmarker();
+
+        System.out.println();
         B.PrintRuntimeOfThisCode("Data load took: ", () -> data.buildMapFromArray(Objects.requireNonNull(loadFile(file)), start));
+
+        System.out.println();
         final int A_id = airport_A_id;
         final int B_id = airport_B_id;
         B.PrintRuntimeOfThisCode("Path finding took: ", () -> {
