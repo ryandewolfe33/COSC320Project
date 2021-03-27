@@ -8,7 +8,7 @@ This dataset contains flight inofrmation for 450000 domestic US flights from 201
 
 
 ## Implementation. 
-Explain how you implemented the algorithm and tested it. All the subtle details should  be  included.  This  is  just  an  explanation  and  you  do  not  need  to  copy  paste  your implementation here. It can be as short as one paragraph. Include links if required.
+We began by defining a Flight class for each row in our dataset. It contains important information about the edges of the graph we will be creating, such as originairportid, destinationairportid, departure and arrival times, and flightTime/ticketCost. Then, we implemented a node class to represent the airports on our graph. There can be multiple nodes all corresonding to the same airport, but with different arrival times and thus a different SortedSet of viable outgoing Flights. Each node contains a heuristic that holds the total time it has taken to reach this node, starting from midnight on the day selected to leave. This heuristic is used in the compareTo method that will sort the nodes reachable from any given airport with the lowest heuristic first. At the begining of the main method, there is a buildMap function called that creates the graph. This step takes the origin airport and constructs nodes from each of its outgoing flights. Then, each of these nodes constructs new nodes from each of their outgoing flights. This is by far the most computationally heavy step and it runs in O(nm) time where n is the number of edges and m is the number of airports in the graph. Then, in our algorithms outlined in milestone 1, we can walk through the graph taking node with the samllest heuristic (sorted when the tree was created) to look at first and the first time we find the destination it is going to have been reached by the cheapest path. While walking through 
 
 ## Results. 
 Include the plots and the interpretation of the plots as input grows. Compare it to the big O function of the running time. For example, if your algorithm runs in , show the graph for 𝑂(𝑛2)the function  in  same  plot  as  well.  Explain  if  this  is  what  you  expected,  and  how  the 𝑛2implementation of your algorithm might have affected the constant values. How the choice of data structure might have affected this result?
@@ -16,7 +16,10 @@ Include the plots and the interpretation of the plots as input grows. Compare it
 ## Unexpected Cases/Difficulties. 
 Our dataset had no cost feild. This was resolved by creating a cost function to simulate the cost of tickets. However, due to the inherient properties of random variables, right now any ticket price, however unlikely, could be possible. This was resolved by putting a lower bound on the normal distributions, it cannot be negative. 
 
-Daylight savings weirdness
+We had a significant number of rollover error when the flights took off late on one day and landed early on the next. Since our dataset only contains the takeoff date, the algorithm was reading these flights as having ~ -23 hour durations. The presence of negative edges like this will disrupt our algorithm as it allows for negative cycles to exist and the same flight to be taken multiple times. 
 
 ## Task Separation and Responsibilities. 
-Who did what for this milestone? Explicitly mention the name of group members and their responsibilities. 
+Josh - Implement Main and debugging
+Ryan - Implement Flight and debugging
+Mike - Implemented Node
+Liza - Implemented FlightList
