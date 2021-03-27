@@ -16,5 +16,7 @@ Include the plots and the interpretation of the plots as input grows. Compare it
 ## Unexpected Cases/Difficulties. 
 Our dataset had no cost feild. This was resolved by creating a cost function to simulate the cost of tickets. However, due to the inherient properties of random variables, right now any ticket price, however unlikely, could be possible. This was resolved by putting a lower bound on the normal distributions, it cannot be negative. 
 
+Daylight savings weirdness
+
 ## Task Separation and Responsibilities. 
 Who did what for this milestone? Explicitly mention the name of group members and their responsibilities. 
