@@ -17,8 +17,7 @@ public class Main {
     public static void main(String[] args) {
         //"dataset/original/On_Time_On_Time_Performance_2017_1.csv"
         // Use this to set the path to the dataset leave date originairportid destinationairportid
-        String userInputsAsString = "dataset/original/On_Time_On_Time_Performance_2017_1.csv 2017-01-03 1105703 1104203";
-        args = userInputsAsString.split(" ");
+        args = userInput().split(" ");
         String dataSetName = "";
         String user_input = "";
         int airport_A_id = 0;
@@ -28,8 +27,7 @@ public class Main {
             user_input = args[1];
             airport_A_id = Integer.parseInt(args[2]);
             airport_B_id = Integer.parseInt(args[3]);
-        }
-        catch(Exception e){
+        } catch (Exception e) {
             System.out.println("Invalid arguments provided");
             e.printStackTrace();
             System.exit(0);
@@ -44,7 +42,7 @@ public class Main {
         long startTime = System.currentTimeMillis();
         try {
             Node path_tail = findPath(airport_A_id, airport_B_id, start);
-            if(path_tail != null){
+            if (path_tail != null) {
                 Node n = path_tail;
                 do {
                     System.out.println(n.toString());
@@ -81,6 +79,18 @@ public class Main {
         return listOfFlights.toArray(new Flight[0]);
     }
 
+    public static String userInput() {
+        Scanner userParams = new Scanner(System.in);
+        System.out.println("Presently, the dataset has American domestic travel only. " +
+                "All airport ID's correspond to an actual american airport.\n"+"INPUTS ARE NOT UNVALIDATED");
+        System.out.println("Enter a starting airport ID(seven-digit integer)");
+        String userStartID = userParams.nextLine();//"1105703";
+        System.out.println("Enter a destination airport ID (seven digit integer)");
+        String userDestID = userParams.nextLine();//"1104203";
+        System.out.println("Enter a day(00-30)");
+        String userStartDate = "2017-01-" + userParams.nextLine();//"2017-01-03";
+        return "dataset/original/On_Time_On_Time_Performance_2017_1.csv" + userStartDate + " " + userStartID + " " + userDestID;
+    }
 
     public static Node findPath(int A, int B, LocalDate start) throws Exception {
         PriorityQueue<Node> open_list = new PriorityQueue<>();
