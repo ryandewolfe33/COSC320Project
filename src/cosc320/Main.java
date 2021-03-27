@@ -16,6 +16,7 @@ public class Main {
     private static FlightList data = new FlightList();
 
     public static void main(String[] args) {
+        //"dataset/original/On_Time_On_Time_Performance_2017_1.csv"
         // Use this to set the path to the dataset leave date originairportid destinationairportid
         String userInputsAsString = "C:/users/ryand/CS320files/10000rows_flight_data.csv 2017-02-14 1105703 1104203";
         args = userInputsAsString.split(" ");
