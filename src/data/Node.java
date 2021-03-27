@@ -3,18 +3,18 @@ package data;
 import java.util.ArrayList;
 
 public class Node implements Comparable<Node> {
-    private Flight me = null;
+    private Flight incomingFlight = null;
     public final int airport_id;
     private ArrayList<Flight> next_flights = null;
 
     public Node(int airport_id, Flight connecting_flight, ArrayList<Flight> next_flights){
-        me = connecting_flight;
+        incomingFlight = connecting_flight;
         this.airport_id = airport_id;
         this.next_flights = next_flights;
     }
 
     public Flight getThisFlight(){
-        return me;
+        return incomingFlight;
     }
 
     public Flight getNextFlight(int index){
@@ -36,20 +36,20 @@ public class Node implements Comparable<Node> {
         Node node = (Node) o;
 
         if (airport_id != node.airport_id) return false;
-        if (!me.equals(node.me)) return false;
+        if (!incomingFlight.equals(node.incomingFlight)) return false;
         return next_flights.equals(node.next_flights);
     }
 
     @Override
     public int compareTo(Node o) {
         //todo: implement heuristics
-        return me.compareTo(o.me);
+        return incomingFlight.compareTo(o.incomingFlight);
     }
 
     @Override
     public String toString() {
-        if(me != null) {
-            return me.toString();
+        if(incomingFlight != null) {
+            return incomingFlight.toString();
         }
         return Integer.toString(airport_id);
     }
