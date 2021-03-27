@@ -16,6 +16,7 @@ public class Main {
     private static FlightList data = new FlightList();
 
     public static void main(String[] args) {
+        //"dataset/original/On_Time_On_Time_Performance_2017_1.csv"
         String dataSetName = "";
         String user_input = "";
         int airport_A_id = 0;
