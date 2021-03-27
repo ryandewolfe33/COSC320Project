@@ -1,5 +1,6 @@
 package data;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -20,6 +21,7 @@ public class Flight implements Comparable<Flight>{
     private LocalDateTime departureDateTime;
     private LocalDateTime arrivalDateTime;
 
+    public Flight(){}
 
     public Flight(String[] dataRow){
         String originId = dataRow[12];
@@ -117,11 +119,6 @@ public class Flight implements Comparable<Flight>{
 
     //Flights will be ordered lowest to highest originAirportId, then by departureTime
     public int compareTo(Flight other) {
-        /* todo: uncomment this code when the heuristics are implemented
-        if (this.originAirportId == other.originAirportId) {
-            return departureDateTime.compareTo(other.departureDateTime);
-        }
-        return arrivalDateTime.compareTo(other.departureDateTime);/**/
         return departureDateTime.compareTo(other.departureDateTime);
     }
 

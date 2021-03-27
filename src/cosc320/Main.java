@@ -17,7 +17,7 @@ public class Main {
     public static void main(String[] args) {
         //"dataset/original/On_Time_On_Time_Performance_2017_1.csv"
         // Use this to set the path to the dataset leave date originairportid destinationairportid
-        String userInputsAsString = "dataset/original/On_Time_On_Time_Performance_2017_1.csv 2017-01-15 1105703 1104203";
+        String userInputsAsString = "dataset/original/On_Time_On_Time_Performance_2017_1.csv 2017-01-03 1105703 1104203";
         args = userInputsAsString.split(" ");
         String dataSetName = "";
         String user_input = "";
@@ -87,7 +87,7 @@ public class Main {
         HashSet<Flight> closed_list = new HashSet<>();
         long layover = 0;
 
-        Node current_node = new Node(A, null, null, data.getAllFlights(A), layover);
+        Node current_node = new Node(A, null, null, data.getAllFlights(A, start), layover);
         do {
             // current outgoing flight
             closed_list.add(current_node.getThisFlight());
@@ -95,16 +95,17 @@ public class Main {
                 // new outgoing flight
                 Flight outgoing_flight = current_node.getNextFlight(i);
                 if (!closed_list.contains(outgoing_flight)) {
-
-                    if(current_node.getThisFlight() != null)
-                        layover = ChronoUnit.MINUTES.between(current_node.getThisFlight().getArrivalDateTime(), outgoing_flight.getDepartureDateTime());
-                    else
-                        layover = ChronoUnit.MINUTES.between(outgoing_flight.getDepartureDateTime(), start.atStartOfDay());
-                    long layoverAndFlightTime = layover + outgoing_flight.getFlightTime();
-
-                    Node n = new Node(outgoing_flight.getOriginAirportId(), current_node, outgoing_flight, data.getNextFlights(outgoing_flight), layover);
+                    if(current_node.getThisFlight() != null) {
+                        layover = ChronoUnit.MINUTES.between(current_node.getThisFlight().getDepartureDateTime(),outgoing_flight.getArrivalDateTime());
+                    } else {
+                        layover = ChronoUnit.MINUTES.between(start.atStartOfDay(), outgoing_flight.getDepartureDateTime());
+                    }
+                    long heuristic = layover + outgoing_flight.getFlightTime();
+                    Node n = new Node(outgoing_flight.getOriginAirportId(), current_node, outgoing_flight, data.getNextFlights(outgoing_flight), heuristic);
                     // calculate heuristics? or perhaps we should just implement a comparison that does that for us
-                    open_list.add(n);
+                    if(!open_list.contains(n)) {
+                        open_list.add(n);
+                    }
                 }
             }
             current_node = open_list.poll();

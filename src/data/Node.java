@@ -42,36 +42,24 @@ public class Node implements Comparable<Node> {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-
         Node node = (Node) o;
-
         if (airport_id != node.airport_id) return false;
-        if (!parent.equals(node.parent)) return false;
         return next_flights.equals(node.next_flights);
     }
 
     @Override
     public int compareTo(Node o) {
-        if(this.heuristic < o.heuristic)
-            return 0;
-        return 1;
+        if(heuristic == o.heuristic){
+            return last_flight.compareTo(o.last_flight);
+        }
+        return Long.compare(heuristic, o.heuristic);
     }
 
     @Override
     public String toString() {
         if(last_flight != null) {
-            return last_flight.toString() + "Heuristic: " + this.heuristic;
+            return last_flight.toString() + " Heuristic: " + this.heuristic;
         }
-        return Integer.toString(airport_id) + " Heuristic: " + this.heuristic;
-    }
-
-    public long calculateTimeHeuristic() {
-        if(this.parent == null)
-            return 0;
-        else if(this.parent.last_flight == null)
-            return this.last_flight.getFlightTime();
-        else
-            return this.parent.heuristic + ChronoUnit.MINUTES.between(this.parent.last_flight.getArrivalDateTime(),
-                                                                      this.parent.last_flight.getDepartureDateTime());
+        return airport_id + " Heuristic: " + this.heuristic;
     }
 }
