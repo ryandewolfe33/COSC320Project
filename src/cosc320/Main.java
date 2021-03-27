@@ -82,7 +82,7 @@ public class Main {
     public static String userInput() {
         Scanner userParams = new Scanner(System.in);
         System.out.println("Presently, the dataset has American domestic travel only. " +
-                "All airport ID's correspond to an actual american airport.\n"+"INPUTS ARE NOT VALIDATED");
+                "All airport ID's correspond to an actual american airport.\n" + "INPUTS ARE NOT VALIDATED");
         System.out.println("Enter a starting airport ID (seven-digit integer). Example: 1105703");
         String userStartID = userParams.nextLine();//"1105703";
         System.out.println("Enter a destination airport ID (seven digit integer). Example: 1104203");
@@ -105,10 +105,10 @@ public class Main {
                 // new outgoing flight
                 Flight outgoing_flight = current_node.getNextFlight(i);
                 if (!closed_list.contains(outgoing_flight)) {
-                    if(current_node.getThisFlight() != null) {
+                    if (current_node.getThisFlight() != null) {
                         var edge_A_side = current_node.getThisFlight().getArrivalDateTime();
                         var edge_B_side = outgoing_flight.getDepartureDateTime();
-                        layover = ChronoUnit.MINUTES.between(edge_A_side,edge_B_side);
+                        layover = ChronoUnit.MINUTES.between(edge_A_side, edge_B_side);
                     } else {
                         var edge_A_side = start.atStartOfDay();
                         var edge_B_side = outgoing_flight.getDepartureDateTime();
@@ -116,7 +116,6 @@ public class Main {
                     }
                     long heuristic = layover + outgoing_flight.getFlightTime();
                     Node n = new Node(outgoing_flight.getDestinationAirportId(), current_node, outgoing_flight, data.getNextFlights(outgoing_flight), heuristic);
-                    // calculate heuristics? or perhaps we should just implement a comparison that does that for us
                     if (!open_list.contains(n)) {
                         open_list.add(n);
                     }
