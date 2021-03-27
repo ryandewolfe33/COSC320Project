@@ -83,11 +83,11 @@ public class Main {
         Scanner userParams = new Scanner(System.in);
         System.out.println("Presently, the dataset has American domestic travel only. " +
                 "All airport ID's correspond to an actual american airport.\n"+"INPUTS ARE NOT VALIDATED");
-        System.out.println("Enter a starting airport ID(seven-digit integer)");
+        System.out.println("Enter a starting airport ID (seven-digit integer). Example: 1105703");
         String userStartID = userParams.nextLine();//"1105703";
-        System.out.println("Enter a destination airport ID (seven digit integer)");
+        System.out.println("Enter a destination airport ID (seven digit integer). Example: 1104203");
         String userDestID = userParams.nextLine();//"1104203";
-        System.out.println("Enter a day(00-30)");
+        System.out.println("Enter a day(00-30). Our dataset only includes data for the month of January 2017.");
         String userStartDate = "2017-01-" + userParams.nextLine();//"2017-01-03";
         return "dataset/original/On_Time_On_Time_Performance_2017_1.csv" + userStartDate + " " + userStartID + " " + userDestID;
     }
