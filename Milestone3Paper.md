@@ -4,6 +4,8 @@
 Include the details of the dataset.
 https://data.world/hoytick/2017-jan-ontimeflightdata-usa
 
+After sanitizing embedded commas: https://drive.google.com/file/d/12hLtOJa23qFEsBJklDeyYuNkUCQW4MHN/view?usp=sharing
+
 This dataset contains flight information for 450000 domestic US flights from 2017. The relevant data fields are year, month, dayofmonth, carrier, flightnum, originairportid, origincityname, destinationairportid, destinationairportid, deptime, arrtime. There is no ticketprice data feild in this dataset, but using the distance feild, we created reasonable estimates for the price. From the site (Rometorio)[https://www.rome2rio.com/blog/2013/01/02/170779446/], it costs about $50 + 11 cents per mile for a ticket. So, we can get a ticket cost = 50 + (distance)(0.11)(normal distribution).  Every flight will cost a $50 plus a normally distributed number with mean 1, std 0.02 around 11 cents per mile. If the normal distribution returns a negative number replace it with 1.
 
 
@@ -21,7 +23,7 @@ We had a significant number of rollover error when the flights took off late on 
 Finally, we had lots of trouble making samples of the dataset to use a tests on our algorithm. The fields were often changed in subtle ways that caused errors in our program and we did not have enough time to solve them all. 
 
 ## Task Separation and Responsibilities. 
-Josh - Implement Main, Node and debugging
-Ryan - Implement Flight and debugging
-Mike - Implemented FlightList and debugging
-Liza - Data read-in
+* Josh - Implement Main, Node and debugging/refactoring
+* Ryan - Implement Flight and debugging
+* Mike - Implemented FlightList and debugging
+* Liza - Data read-in
