@@ -82,7 +82,7 @@ public class Main {
     public static String userInput() {
         Scanner userParams = new Scanner(System.in);
         System.out.println("Presently, the dataset has American domestic travel only. " +
-                "All airport ID's correspond to an actual american airport.\n"+"INPUTS ARE NOT UNVALIDATED");
+                "All airport ID's correspond to an actual american airport.\n"+"INPUTS ARE NOT VALIDATED");
         System.out.println("Enter a starting airport ID(seven-digit integer)");
         String userStartID = userParams.nextLine();//"1105703";
         System.out.println("Enter a destination airport ID (seven digit integer)");
