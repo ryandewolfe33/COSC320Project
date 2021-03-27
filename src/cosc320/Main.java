@@ -89,6 +89,7 @@ public class Main {
         String userDestID = userParams.nextLine();//"1104203";
         System.out.println("Enter a day(00-30). Our dataset only includes data for the month of January 2017.");
         String userStartDate = "2017-01-" + userParams.nextLine();//"2017-01-03";
+        userParams.close();
         return "dataset/original/On_Time_On_Time_Performance_2017_1.csv " + userStartDate + " " + userStartID + " " + userDestID;
     }
 
