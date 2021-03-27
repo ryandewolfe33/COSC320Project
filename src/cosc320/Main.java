@@ -96,17 +96,19 @@ public class Main {
                 Flight outgoing_flight = current_node.getNextFlight(i);
                 if (!closed_list.contains(outgoing_flight)) {
                     if(current_node.getThisFlight() != null) {
-                        layover = ChronoUnit.MINUTES.between(current_node.getThisFlight().getDepartureDateTime(),outgoing_flight.getArrivalDateTime());
+                        var edge_A_side = current_node.getThisFlight().getArrivalDateTime();
+                        var edge_B_side = outgoing_flight.getDepartureDateTime();
+                        layover = ChronoUnit.MINUTES.between(edge_A_side,edge_B_side);
                     } else {
-                        layover = ChronoUnit.MINUTES.between(start.atStartOfDay(), outgoing_flight.getDepartureDateTime());
+                        var edge_A_side = start.atStartOfDay();
+                        var edge_B_side = outgoing_flight.getDepartureDateTime();
+                        layover = ChronoUnit.MINUTES.between(edge_A_side, edge_B_side);
                     }
                     long heuristic = layover + outgoing_flight.getFlightTime();
-                    if(layover < 48*60) {
-                        Node n = new Node(outgoing_flight.getOriginAirportId(), current_node, outgoing_flight, data.getNextFlights(outgoing_flight), heuristic);
-                        // calculate heuristics? or perhaps we should just implement a comparison that does that for us
-                        if (!open_list.contains(n)) {
-                            open_list.add(n);
-                        }
+                    Node n = new Node(outgoing_flight.getDestinationAirportId(), current_node, outgoing_flight, data.getNextFlights(outgoing_flight), heuristic);
+                    // calculate heuristics? or perhaps we should just implement a comparison that does that for us
+                    if (!open_list.contains(n)) {
+                        open_list.add(n);
                     }
                 }
             }

@@ -1,6 +1,7 @@
 package data;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.chrono.ChronoLocalDateTime;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -22,26 +23,37 @@ public class FlightList {
     }
 
     public SortedSet<Flight> getAllFlights(int airport_id, LocalDate day) {
-        Flight f = new Flight();
-        f.setDepartureDateTime(day.atStartOfDay());
-        SortedSet<Flight> tail = flights.get(airport_id).tailSet(f);
-        //f.setDepartureDateTime(day.atStartOfDay().plusDays(7));
-        return tail;
+        Flight f1 = new Flight();
+        Flight f2 = new Flight();
+        LocalDateTime first = day.atStartOfDay();
+        LocalDateTime second = day.atStartOfDay().plusDays(3);
+        f1.setDepartureDateTime(first);
+        f2.setDepartureDateTime(second);
+        /*System.out.println("first: " + first);
+        DebugSet(flights.get(airport_id).subSet(f1,f2));
+        System.out.println("second: " + second);/**/
+        return flights.get(airport_id).subSet(f1,f2);
     }
 
     public SortedSet<Flight> getNextFlights(Flight arrival) {
         int arrID = arrival.getDestinationAirportId();
         /* todo: ensure Flight.compareTo is going to work correctly with the arrivalTime vs departureTime*/
-        Flight copy = new Flight(arrival);
-        copy.setDepartureDateTime(copy.getArrivalDateTime());
+        Flight f1 = new Flight();
+        Flight f2 = new Flight();
+        f1.setDepartureDateTime(arrival.getArrivalDateTime());
+        f2.setDepartureDateTime(f1.getDepartureDateTime().plusDays(2));
         TreeSet<Flight> airport = flights.get(arrID);
-        var arr = airport.tailSet(arrival);
-       /* System.out.println("Copy departure time: " + copy.getDepartureDateTime());
+        /*var mini_set = airport.tailSet(arrival);
+        System.out.println("Copy departure time: " + copy.getDepartureDateTime());
         System.out.println("Flight in arrival time: " + arrival.getArrivalDateTime());
-        for (Flight f : arr) {
+        DebugSet(mini_set);/**/
+        return airport.subSet(f1,f2);
+    }
+
+    private void DebugSet(SortedSet<Flight> flights){
+        for(Flight f : flights){
             System.out.println(f.getDepartureDateTime());
-        }*/
-        return airport.tailSet(copy);
+        }
     }
 
 }
