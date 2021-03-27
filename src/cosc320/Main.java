@@ -31,7 +31,7 @@ public class Main {
             user_input = args[1];
             airport_A_id = Integer.parseInt(args[2]);
             airport_B_id = Integer.parseInt(args[3]);
-            if (args[4] == "time")
+            if (args[4].equals("time"))
                 heuristic = true;
         } catch (Exception e) {
             System.out.println("Invalid arguments provided");
@@ -133,6 +133,9 @@ public class Main {
                     } else {
                         var edge_A_side = start.atStartOfDay();
                         var edge_B_side = outgoing_flight.getDepartureDateTime();
+                        if(outgoing_flight.getDestinationAirportId() == B){
+                            continue;
+                        }
                         layover = ChronoUnit.MINUTES.between(edge_A_side, edge_B_side);
                     }
                     if (heuristic) {
