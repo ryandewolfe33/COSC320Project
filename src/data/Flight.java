@@ -86,6 +86,8 @@ public class Flight implements Comparable<Flight>{
         return originAirportId;
     }
 
+    public int getFlightTime(){return flightTime;}
+
     public LocalDateTime getDepartureDateTime(){
         return departureDateTime;
     }
