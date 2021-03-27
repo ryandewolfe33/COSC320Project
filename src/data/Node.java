@@ -1,18 +1,22 @@
 package data;
 
 import java.util.ArrayList;
+import java.time.temporal.ChronoUnit;
+import java.util.SortedSet;
 
 public class Node implements Comparable<Node> {
     public final Node parent;
     private Flight last_flight = null;
     public final int airport_id;
-    private ArrayList<Flight> next_flights = null;
+    private SortedSet<Flight> next_flights = null;
+    private long heuristic;
 
-    public Node(int airport_id, Node parent, Flight connecting_flight, ArrayList<Flight> next_flights){
+    public Node(int airport_id, Node parent, Flight connecting_flight, SortedSet<Flight> next_flights, long heuristic){
         this.parent = parent;
         this.last_flight = connecting_flight;
         this.airport_id = airport_id;
         this.next_flights = next_flights;
+        this.heuristic = heuristic;
     }
 
     public Flight getThisFlight(){
@@ -21,7 +25,11 @@ public class Node implements Comparable<Node> {
 
     public Flight getNextFlight(int index){
         if(index < next_flights.size() && index > 0) {
-            return next_flights.get(index);
+            int i=0;
+            for(Flight f: next_flights)
+                if(i++ == index)
+                    return f;
+
         }
         return null;
     }
@@ -44,15 +52,26 @@ public class Node implements Comparable<Node> {
 
     @Override
     public int compareTo(Node o) {
-        //todo: implement heuristics
-        return 0;
+        if(this.heuristic < o.heuristic)
+            return 0;
+        return 1;
     }
 
     @Override
     public String toString() {
         if(last_flight != null) {
-            return last_flight.toString();
+            return last_flight.toString() + "Heuristic: " + this.heuristic;
         }
-        return Integer.toString(airport_id);
+        return Integer.toString(airport_id) + " Heuristic: " + this.heuristic;
+    }
+
+    public long calculateTimeHeuristic() {
+        if(this.parent == null)
+            return 0;
+        else if(this.parent.last_flight == null)
+            return this.last_flight.getFlightTime();
+        else
+            return this.parent.heuristic + ChronoUnit.MINUTES.between(this.parent.last_flight.getArrivalDateTime(),
+                                                                      this.parent.last_flight.getDepartureDateTime());
     }
 }

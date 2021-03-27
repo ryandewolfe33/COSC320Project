@@ -128,8 +128,8 @@ public class Flight implements Comparable<Flight>{
     public String toString(){
         return flightName + ", leaving " + originAirportId + " at " +  " " +
                 this.departureDateTime.getHour() + ":" + this.departureDateTime.getMinute() +
-                " and arriving at " + this.destinationAirportId + " at " + " " +
-                this.arrivalDateTime.getHour() + ":" + this.arrivalDateTime.getMinute();
+                " and arriving at " + this.destinationAirportId + " at " + this.arrivalDateTime.toString()
+                + " Flight Time: " + flightTime;
     }
 
     @Override

@@ -8,8 +8,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
 import java.util.*;
+import java.time.temporal.ChronoUnit;
 
 public class Main {
     private static FlightList data = new FlightList();
@@ -17,7 +17,7 @@ public class Main {
     public static void main(String[] args) {
         //"dataset/original/On_Time_On_Time_Performance_2017_1.csv"
         // Use this to set the path to the dataset leave date originairportid destinationairportid
-        String userInputsAsString = "dataset/original/On_Time_On_Time_Performance_2017_1.csv 2017-01-03 1105703 1104203";
+        String userInputsAsString = "dataset/original/On_Time_On_Time_Performance_2017_1.csv 2017-01-15 1105703 1104203";
         args = userInputsAsString.split(" ");
         String dataSetName = "";
         String user_input = "";
@@ -43,7 +43,7 @@ public class Main {
         data.buildMapFromArray(Objects.requireNonNull(loadFile(file)), start);
         long startTime = System.currentTimeMillis();
         try {
-            Node path_tail = findPath(airport_A_id, airport_B_id);
+            Node path_tail = findPath(airport_A_id, airport_B_id, start);
             if(path_tail != null){
                 Node n = path_tail;
                 do {
@@ -82,11 +82,12 @@ public class Main {
     }
 
 
-    public static Node findPath(int A, int B) throws Exception {
+    public static Node findPath(int A, int B, LocalDate start) throws Exception {
         PriorityQueue<Node> open_list = new PriorityQueue<>();
         HashSet<Flight> closed_list = new HashSet<>();
+        long layover = 0;
 
-        Node current_node = new Node(A, null, null, new ArrayList<>(data.getAllFlights(A)));
+        Node current_node = new Node(A, null, null, data.getAllFlights(A), layover);
         do {
             // current outgoing flight
             closed_list.add(current_node.getThisFlight());
@@ -94,7 +95,14 @@ public class Main {
                 // new outgoing flight
                 Flight outgoing_flight = current_node.getNextFlight(i);
                 if (!closed_list.contains(outgoing_flight)) {
-                    Node n = new Node(outgoing_flight.getOriginAirportId(), current_node, outgoing_flight, data.getNextFlights(outgoing_flight));
+
+                    if(current_node.getThisFlight() != null)
+                        layover = ChronoUnit.MINUTES.between(current_node.getThisFlight().getArrivalDateTime(), outgoing_flight.getDepartureDateTime());
+                    else
+                        layover = ChronoUnit.MINUTES.between(outgoing_flight.getDepartureDateTime(), start.atStartOfDay());
+                    long layoverAndFlightTime = layover + outgoing_flight.getFlightTime();
+
+                    Node n = new Node(outgoing_flight.getOriginAirportId(), current_node, outgoing_flight, data.getNextFlights(outgoing_flight), layover);
                     // calculate heuristics? or perhaps we should just implement a comparison that does that for us
                     open_list.add(n);
                 }
@@ -107,7 +115,4 @@ public class Main {
         return current_node;
     }
 
-    public static long calculateTimeHeuristic(Flight last, Flight next) {
-        return ChronoUnit.MINUTES.between(last.getArrivalDateTime(), next.getArrivalDateTime())+next.getFlightTime();
-    }
 }
