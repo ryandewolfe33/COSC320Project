@@ -16,7 +16,7 @@ public class Node implements Comparable<Node> {
         this.last_flight = connecting_flight;
         this.airport_id = airport_id;
         this.next_flights = next_flights;
-        this.heuristic = heuristic;
+        this.heuristic = heuristic + (parent != null ? parent.heuristic : 0);
     }
 
     public Flight getThisFlight(){
@@ -58,8 +58,8 @@ public class Node implements Comparable<Node> {
     @Override
     public String toString() {
         if(last_flight != null) {
-            return last_flight.toString() + " Heuristic: " + this.heuristic;
+            return String.format("%s [Heuristic: %4d]\n", last_flight, heuristic);
         }
-        return airport_id + " Heuristic: " + this.heuristic;
+        return "";
     }
 }

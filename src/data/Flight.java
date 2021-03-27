@@ -67,7 +67,7 @@ public class Flight implements Comparable<Flight>{
 
             distance = Integer.parseInt(dist);
             ticketPrice = makeTicketPrice(distance);
-            flightName = fliName + " on " + departureDateTime.toString();
+            flightName = fliName;
         } catch (Exception e){
             e.printStackTrace();
         }
@@ -123,10 +123,13 @@ public class Flight implements Comparable<Flight>{
     }
 
     public String toString(){
-        return flightName + ", leaving " + originAirportId + " at " +  " " +
-                departureDateTime +
-                " and arriving at " + this.destinationAirportId + " at " + this.arrivalDateTime.toString()
-                + " Flight Time: " + flightTime;
+        return String.format("%s {origin: %d; destination: %d; ticket price %f; departure: %s; flight time: %4d}",
+                flightName,
+                originAirportId,
+                destinationAirportId,
+                ticketPrice,
+                departureDateTime,
+                flightTime);
     }
 
     @Override

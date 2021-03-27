@@ -4,8 +4,10 @@ import data.Flight;
 import data.FlightList;
 import data.Node;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -38,40 +40,47 @@ public class Main {
 
         // todo: ensure path is correct
         File file = new File(dataSetName);
-        data.buildMapFromArray(Objects.requireNonNull(loadFile(file)), start);
-        long startTime = System.currentTimeMillis();
-        try {
-            Node path_tail = findPath(airport_A_id, airport_B_id, start);
-            if (path_tail != null) {
-                Node n = path_tail;
-                do {
-                    System.out.println(n.toString());
-                    n = n.parent;
-                } while (n != null);
+        Benchmarker B = new Benchmarker();
+        B.PrintRuntimeOfThisCode("Data load took: ", () -> data.buildMapFromArray(Objects.requireNonNull(loadFile(file)), start));
+        final int A_id = airport_A_id;
+        final int B_id = airport_B_id;
+        B.PrintRuntimeOfThisCode("Path finding took: ", () -> {
+            try {
+                Node path_tail = findPath(A_id, B_id, start);
+                if (path_tail != null) {
+                    Node n = path_tail;
+                    ArrayList<Node> path = new ArrayList<>();
+                    do {
+                        path.add(n);
+                        n = n.parent;
+                    } while (n != null);
+                    for (int i = path.size() - 1; i >= 0; --i) {
+                        System.out.print(path.get(i));
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        long endTime = System.currentTimeMillis();
-        System.out.println("The algorithms took " + (endTime - startTime) + " milliseconds");
+        });
     }
 
     public static Flight[] loadFile(File data) {
         ArrayList<Flight> listOfFlights = new ArrayList<Flight>();
         try {
-            Scanner forFile = new Scanner(data);
-            forFile.nextLine(); // dataRow indices
-            forFile.nextLine(); // column headings
-            while (forFile.hasNextLine()) {
-                String row = forFile.nextLine();
+            BufferedReader in = new BufferedReader(new FileReader(data), (int)data.length());
+            Scanner scanner = new Scanner(in);
+            scanner.nextLine(); // dataRow indices
+            scanner.nextLine(); // column headings
+            while (scanner.hasNextLine()) {
+                String row = scanner.nextLine();
                 String[] dataFromRow = row.split(",");
                 if (!dataFromRow[51].isEmpty()) {
                     Flight addFlight = new Flight(dataFromRow);
                     listOfFlights.add(addFlight);
                 }
             }
-            forFile.close();
-        } catch (FileNotFoundException e) {
+            in.close();
+        } catch (Exception e) {
             System.out.println("Sorry, file not found");
             return null;
         }
@@ -106,10 +115,10 @@ public class Main {
                 // new outgoing flight
                 Flight outgoing_flight = current_node.getNextFlight(i);
                 if (!closed_list.contains(outgoing_flight)) {
-                    if (current_node.getThisFlight() != null) {
+                    if(current_node.getThisFlight() != null) {
                         var edge_A_side = current_node.getThisFlight().getArrivalDateTime();
                         var edge_B_side = outgoing_flight.getDepartureDateTime();
-                        layover = ChronoUnit.MINUTES.between(edge_A_side, edge_B_side);
+                        layover = ChronoUnit.MINUTES.between(edge_A_side,edge_B_side);
                     } else {
                         var edge_A_side = start.atStartOfDay();
                         var edge_B_side = outgoing_flight.getDepartureDateTime();
@@ -117,6 +126,7 @@ public class Main {
                     }
                     long heuristic = layover + outgoing_flight.getFlightTime();
                     Node n = new Node(outgoing_flight.getDestinationAirportId(), current_node, outgoing_flight, data.getNextFlights(outgoing_flight), heuristic);
+                    // calculate heuristics? or perhaps we should just implement a comparison that does that for us
                     if (!open_list.contains(n)) {
                         open_list.add(n);
                     }
