@@ -7,7 +7,6 @@ import data.Node;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
@@ -18,7 +17,7 @@ public class Main {
     public static void main(String[] args) {
         //"dataset/original/On_Time_On_Time_Performance_2017_1.csv"
         // Use this to set the path to the dataset leave date originairportid destinationairportid
-        String userInputsAsString = "C:/users/ryand/CS320files/10000rows_flight_data.csv 2017-02-14 1105703 1104203";
+        String userInputsAsString = "dataset/original/On_Time_On_Time_Performance_2017_1.csv 2017-01-03 1105703 1104203";
         args = userInputsAsString.split(" ");
         String dataSetName = "";
         String user_input = "";
@@ -41,12 +40,16 @@ public class Main {
 
         // todo: ensure path is correct
         File file = new File(dataSetName);
-        long startTime = System.currentTimeMillis();
         data.buildMapFromArray(Objects.requireNonNull(loadFile(file)), start);
+        long startTime = System.currentTimeMillis();
         try {
-            var path = findPath(airport_A_id, airport_B_id);
-            for (Node n : path) {
-                System.out.println(n.toString());
+            Node path_tail = findPath(airport_A_id, airport_B_id);
+            if(path_tail != null){
+                Node n = path_tail;
+                do {
+                    System.out.println(n.toString());
+                    n = n.parent;
+                } while (n != null);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -79,8 +82,7 @@ public class Main {
     }
 
 
-    public static ArrayList<Node> findPath(int A, int B) throws Exception {
-        ArrayList<Node> path = new ArrayList<>();
+    public static Node findPath(int A, int B) throws Exception {
         PriorityQueue<Node> open_list = new PriorityQueue<>();
         HashSet<Flight> closed_list = new HashSet<>();
 
@@ -102,7 +104,7 @@ public class Main {
                 throw new Exception("Cannot find a path. There appears to be either an issue with the algorithm, or the data.");
             }
         } while (current_node.airport_id != B);
-        return path;
+        return current_node;
     }
 
     public static long calculateTimeHeuristic(Flight last, Flight next) {

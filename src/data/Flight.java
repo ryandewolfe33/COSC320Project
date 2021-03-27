@@ -22,8 +22,8 @@ public class Flight implements Comparable<Flight>{
 
 
     public Flight(String[] dataRow){
-        String originId = dataRow[11];
-        String destinId = dataRow[20];
+        String originId = dataRow[12];
+        String destinId = dataRow[21];
         String deptDate = dataRow[5];
         StringBuffer deptTime = new StringBuffer(dataRow[29]);
         StringBuffer arrTime = new StringBuffer(dataRow[40]);

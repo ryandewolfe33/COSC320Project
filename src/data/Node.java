@@ -3,7 +3,7 @@ package data;
 import java.util.ArrayList;
 
 public class Node implements Comparable<Node> {
-    private Node parent = null;
+    public final Node parent;
     private Flight last_flight = null;
     public final int airport_id;
     private ArrayList<Flight> next_flights = null;
@@ -50,8 +50,8 @@ public class Node implements Comparable<Node> {
 
     @Override
     public String toString() {
-        if(parent != null) {
-            return parent.toString();
+        if(last_flight != null) {
+            return last_flight.toString();
         }
         return Integer.toString(airport_id);
     }
