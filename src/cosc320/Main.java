@@ -6,7 +6,6 @@ import data.Node;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -14,8 +13,13 @@ import java.util.*;
 import java.time.temporal.ChronoUnit;
 
 public class Main {
+
+    private enum HeuristicType {
+        USE_TIME,
+        USE_PRICE;
+    };
     private static FlightList data = new FlightList();
-    private static Boolean heuristic;
+    private static HeuristicType heuristicType;
 
     public static void main(String[] args) {
         //"dataset/original/On_Time_On_Time_Performance_2017_1.csv"
@@ -25,14 +29,16 @@ public class Main {
         String user_input = "";
         int airport_A_id = 0;
         int airport_B_id = 0;
-        heuristic = false;
         try {
             dataSetName = args[0];
             user_input = args[1];
             airport_A_id = Integer.parseInt(args[2]);
             airport_B_id = Integer.parseInt(args[3]);
-            if (args[4].equals("time"))
-                heuristic = true;
+            if (args[4].equals("time")) {
+                heuristicType = HeuristicType.USE_TIME;
+            } else {
+                heuristicType = HeuristicType.USE_PRICE;
+            }
         } catch (Exception e) {
             System.out.println("Invalid arguments provided");
             e.printStackTrace();
@@ -115,7 +121,7 @@ public class Main {
     public static Node findPath(int A, int B, LocalDate start) throws Exception {
         PriorityQueue<Node> open_list = new PriorityQueue<>();
         HashSet<Flight> closed_list = new HashSet<>();
-        long heuristicValue;
+        long heuristic = 0;
         long layover = 0;
 
         Node current_node = new Node(A, null, null, data.getAllFlights(A, start), layover);
@@ -138,12 +144,17 @@ public class Main {
                         }
                         layover = ChronoUnit.MINUTES.between(edge_A_side, edge_B_side);
                     }
-                    if (heuristic) {
-                        heuristicValue = layover + outgoing_flight.getFlightTime();
-                    } else {
-                        heuristicValue = (long) outgoing_flight.getTicketPrice();
+                    switch(heuristicType){
+                        case USE_TIME:
+                            heuristic = layover + outgoing_flight.getFlightTime();
+                            break;
+                        case USE_PRICE:
+                            heuristic = (long) outgoing_flight.getTicketPrice();
+                            break;
+                        default:
+                            heuristic = Long.MIN_VALUE;
                     }
-                    Node n = new Node(outgoing_flight.getDestinationAirportId(), current_node, outgoing_flight, data.getNextFlights(outgoing_flight), heuristicValue);
+                    Node n = new Node(outgoing_flight.getDestinationAirportId(), current_node, outgoing_flight, data.getNextFlights(outgoing_flight), heuristic);
                     if (!open_list.contains(n)) {
                         open_list.add(n);
                     }
