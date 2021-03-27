@@ -101,10 +101,12 @@ public class Main {
                         layover = ChronoUnit.MINUTES.between(start.atStartOfDay(), outgoing_flight.getDepartureDateTime());
                     }
                     long heuristic = layover + outgoing_flight.getFlightTime();
-                    Node n = new Node(outgoing_flight.getOriginAirportId(), current_node, outgoing_flight, data.getNextFlights(outgoing_flight), heuristic);
-                    // calculate heuristics? or perhaps we should just implement a comparison that does that for us
-                    if(!open_list.contains(n)) {
-                        open_list.add(n);
+                    if(layover < 48*60) {
+                        Node n = new Node(outgoing_flight.getOriginAirportId(), current_node, outgoing_flight, data.getNextFlights(outgoing_flight), heuristic);
+                        // calculate heuristics? or perhaps we should just implement a comparison that does that for us
+                        if (!open_list.contains(n)) {
+                            open_list.add(n);
+                        }
                     }
                 }
             }
