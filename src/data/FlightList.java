@@ -21,7 +21,7 @@ public class FlightList {
         }
     }
 
-    public SortedSet<Flight> getAllFlights(int airport_id, LocalDate day){
+    public SortedSet<Flight> getAllFlights(int airport_id, LocalDate day) {
         Flight f = new Flight();
         f.setDepartureDateTime(day.atStartOfDay());
         SortedSet<Flight> tail = flights.get(airport_id).tailSet(f);
@@ -35,7 +35,12 @@ public class FlightList {
         Flight copy = new Flight(arrival);
         copy.setDepartureDateTime(copy.getArrivalDateTime());
         TreeSet<Flight> airport = flights.get(arrID);
-        var arr = new ArrayList<>(airport.tailSet(arrival));
+        var arr = airport.tailSet(arrival);
+       /* System.out.println("Copy departure time: " + copy.getDepartureDateTime());
+        System.out.println("Flight in arrival time: " + arrival.getArrivalDateTime());
+        for (Flight f : arr) {
+            System.out.println(f.getDepartureDateTime());
+        }*/
         return airport.tailSet(copy);
     }
 
