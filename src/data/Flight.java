@@ -11,8 +11,8 @@ public class Flight implements Comparable<Flight>{
 
     private String flightName;
     private double ticketPrice;
-    private int flightTime;
-    private int distance;
+    private int flightTime; // minutes
+    private int distance; // miles
 
     private int originAirportId;
     private int destinationAirportId;
@@ -55,10 +55,7 @@ public class Flight implements Comparable<Flight>{
 
             departureDateTime = LocalDateTime.parse(deptTime, departure_format);
             flightTime = Integer.parseInt(fliTime);
-            int airtime_hours = flightTime / 60;
-            int airtime_minutes = flightTime - (airtime_hours * 60);
-            LocalDateTime arrival_time = departureDateTime.plusHours(airtime_hours).plusMinutes(airtime_minutes);
-
+            LocalDateTime arrival_time = departureDateTime.plusMinutes(flightTime);
             LocalTime local_arrival_time = LocalTime.parse(arrTime, time_format);
             int timezone_offset_hours = local_arrival_time.getHour() - arrival_time.getHour();
             int timezone_offset_minutes = local_arrival_time.getMinute() - arrival_time.getMinute();
