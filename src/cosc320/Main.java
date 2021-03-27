@@ -16,16 +16,27 @@ public class Main {
     private static FlightList data = new FlightList();
 
     public static void main(String[] args) {
-        // todo: get user input (ie. date, airport A/B)
-        String user_input = "2017-02-05";
+        String dataSetName = "";
+        String user_input = "";
         int airport_A_id = 0;
         int airport_B_id = 0;
+        try {
+            dataSetName = args[0];
+            user_input = args[1];
+            airport_A_id = Integer.parseInt(args[2]);
+            airport_B_id = Integer.parseInt(args[3]);
+        }
+        catch(Exception e){
+            System.out.println("Invalid arguments provided");
+            e.printStackTrace();
+            System.exit(0);
+        }
 
         DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         LocalDate start = LocalDate.parse(user_input, format);
 
         // todo: ensure path is correct
-        File file = new File("dataset/original/On_Time_On_Time_Performance_2017_1.csv");
+        File file = new File(dataSetName);
         data.buildMapFromArray(Objects.requireNonNull(loadFile(file)), start);
         try {
             var path = findPath(airport_A_id, airport_B_id);
