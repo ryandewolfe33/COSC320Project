@@ -67,7 +67,7 @@ public class Main {
         PriorityQueue<Node> open_list = new PriorityQueue<>();
         HashSet<Flight> closed_list = new HashSet<>();
 
-        Node current_node = new Node(A,null, new ArrayList<>(data.getAllFlights(A)));
+        Node current_node = new Node(A, null,null, new ArrayList<>(data.getAllFlights(A)));
         do {
             // current outgoing flight
             closed_list.add(current_node.getThisFlight());
@@ -75,7 +75,7 @@ public class Main {
                 // new outgoing flight
                 Flight outgoing_flight = current_node.getNextFlight(i);
                 if(!closed_list.contains(outgoing_flight)){
-                    Node n = new Node(outgoing_flight.getOriginAirportId(), outgoing_flight, data.getNextFlights(outgoing_flight));
+                    Node n = new Node(outgoing_flight.getOriginAirportId(), current_node, outgoing_flight, data.getNextFlights(outgoing_flight));
                     // calculate heuristics? or perhaps we should just implement a comparison that does that for us
                     open_list.add(n);
                 }
