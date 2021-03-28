@@ -18,8 +18,14 @@ public class AirportList {
     }
 
     public static void printAirports(){
+        int i = 0;
         for(var kv : code_lookup.entrySet()){
-            System.out.println(kv);
+            if(i++ == 15) {
+                i = 1;
+                System.out.println();
+            }
+            System.out.printf("%s, ", kv.getKey());
         }
+        System.out.println();
     }
 }
