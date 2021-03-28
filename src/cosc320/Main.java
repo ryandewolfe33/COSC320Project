@@ -176,13 +176,8 @@ public class Main {
                         var edge_A_side = this_flight.getArrivalDateTime();
                         var edge_B_side = next_flight.getDepartureDateTime();
                         layover = ChronoUnit.MINUTES.between(edge_A_side, edge_B_side) - this_flight.getTimezoneOffset();
-                    } else {
-                        var edge_A_side = start.atStartOfDay();
-                        var edge_B_side = next_flight.getDepartureDateTime();
-                        if(next_flight.getDestinationAirportId() == B){
-                            continue;
-                        }
-                        layover = ChronoUnit.MINUTES.between(edge_A_side, edge_B_side);
+                    } else if(next_flight.getDestinationAirportId() == B){
+                        continue;
                     }
                     switch(heuristicType){
                         case USE_TIME:

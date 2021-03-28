@@ -130,7 +130,7 @@ public class Flight implements Comparable<Flight>{
     }
 
     public String toString(){
-        return String.format("%s {origin: %s; destination: %s; ticket price %6.2f; departure: %s; flight time: %3d minutes}",
+        return String.format("%-8s {origin: %s; destination: %s; ticket price %6.2f; departure: %s; flight time: %3d minutes}",
                 flightName,
                 AirportList.getAirportCode(originAirportId),
                 AirportList.getAirportCode(destinationAirportId),
