@@ -44,7 +44,7 @@ public class Main {
         if(temp.isEmpty()){
             System.out.println("defaulting to airport id: " + AirportList.getAirportCode(1104203));
         }
-        String userDestID = temp.isEmpty() ? "1104203" : AirportList.getAirportId(userParams.nextLine()).toString();
+        String userDestID = temp.isEmpty() ? "1104203" : AirportList.getAirportId(temp).toString();
 
 
         System.out.println("Enter a day(00-30). Our dataset only includes data for the month of January 2017.");
@@ -142,7 +142,7 @@ public class Main {
                         AirportList.addAirport(origin_airport);
                     }
                     if (!dataFromRow[23].isEmpty()){
-                        Airport destination_airport = new Airport(dataFromRow[23], flight.getOriginAirportId());
+                        Airport destination_airport = new Airport(dataFromRow[23], flight.getDestinationAirportId());
                         AirportList.addAirport(destination_airport);
                     }
                 }
@@ -162,7 +162,7 @@ public class Main {
         long heuristic = 0;
         long layover = 0;
 
-        Node current_node = new Node(A, null, null, data.getAllFlights(A, start), layover);
+        Node current_node = new Node(A, null, null, data.getAllFlights(A, start), 0);
         do {
             // current outgoing flight
             Flight this_flight = current_node.getThisFlight();
