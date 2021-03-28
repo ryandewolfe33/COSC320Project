@@ -9,7 +9,7 @@ import java.util.Random;
 public class Flight implements Comparable<Flight>{
     private static final DateTimeFormatter departure_format = DateTimeFormatter.ofPattern("yyyy-MM-dd Hmm");
     private static final DateTimeFormatter time_format = DateTimeFormatter.ofPattern("Hmm");
-    private static final Random random = new Random();
+    private static final Random random = new Random(1988);
 
     private String flightName;
     private long ticketPrice;
