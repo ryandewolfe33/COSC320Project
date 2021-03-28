@@ -20,6 +20,7 @@ public class Flight implements Comparable<Flight>{
 
     private LocalDateTime departureDateTime;
     private LocalDateTime arrivalDateTime;
+    private long timezoneOffset; // minutes
 
     public Flight(){}
 
@@ -61,9 +62,11 @@ public class Flight implements Comparable<Flight>{
             LocalTime local_arrival_time = LocalTime.parse(arrTime, time_format);
             int timezone_offset_hours = local_arrival_time.getHour() - arrival_time.getHour();
             int timezone_offset_minutes = local_arrival_time.getMinute() - arrival_time.getMinute();
+            timezoneOffset = timezone_offset_minutes + (timezone_offset_hours * 60);
             arrivalDateTime = arrival_time
-                    .plusHours(timezone_offset_hours).plusMinutes(timezone_offset_minutes)
-                    .withHour(local_arrival_time.getHour()).withMinute(local_arrival_time.getMinute());
+                    .plusMinutes(timezoneOffset)
+                    .withHour(local_arrival_time.getHour())
+                    .withMinute(local_arrival_time.getMinute());
 
             distance = Integer.parseInt(dist);
             ticketPrice = makeTicketPrice(distance);
@@ -89,6 +92,10 @@ public class Flight implements Comparable<Flight>{
     }
 
     public int getFlightTime(){return flightTime;}
+
+    public long getTimezoneOffset(){
+        return timezoneOffset;
+    }
 
     public LocalDateTime getDepartureDateTime(){
         return departureDateTime;
@@ -123,10 +130,10 @@ public class Flight implements Comparable<Flight>{
     }
 
     public String toString(){
-        return String.format("%s {origin: %d; destination: %d; ticket price %6.2f; departure: %s; flight time: %3d minutes}",
+        return String.format("%s {origin: %s; destination: %s; ticket price %6.2f; departure: %s; flight time: %3d minutes}",
                 flightName,
-                originAirportId,
-                destinationAirportId,
+                AirportList.getAirportCode(originAirportId),
+                AirportList.getAirportCode(destinationAirportId),
                 ticketPrice,
                 departureDateTime,
                 flightTime);

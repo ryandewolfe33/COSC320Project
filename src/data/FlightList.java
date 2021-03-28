@@ -22,6 +22,19 @@ public class FlightList {
         }
     }
 
+    public SortedSet<Flight> getAllFlights(String airport_code, LocalDate day) {
+        Flight f1 = new Flight();
+        Flight f2 = new Flight();
+        LocalDateTime first = day.atStartOfDay();
+        LocalDateTime second = day.atStartOfDay().plusDays(3);
+        f1.setDepartureDateTime(first);
+        f2.setDepartureDateTime(second);
+        /*System.out.println("first: " + first);
+        DebugSet(flights.get(airport_id).subSet(f1,f2));
+        System.out.println("second: " + second);/**/
+        return flights.get(AirportList.getAirportId(airport_code)).subSet(f1,f2);
+    }
+
     public SortedSet<Flight> getAllFlights(int airport_id, LocalDate day) {
         Flight f1 = new Flight();
         Flight f2 = new Flight();
