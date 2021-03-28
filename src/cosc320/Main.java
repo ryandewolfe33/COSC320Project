@@ -13,23 +13,13 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public class Main {
 
-    private enum HeuristicType {
-        USE_TIME,
-        USE_PRICE;
-    };
     private static FlightList data = new FlightList();
-    private static HeuristicType heuristicType;
 
     public static String userInput() {
         Scanner userParams = new Scanner(System.in);
         System.out.println("Presently, the dataset has American domestic travel only. " +
                 "All airport ID's correspond to an actual american airport.\n" + "INPUTS ARE NOT VALIDATED");
-        System.out.println("Type 'price' to search for the cheapest path or 'time' to find the shortest path");
-        String heuristicSelection = userParams.nextLine();//"time";
-        if(heuristicSelection.isEmpty()){
-            System.out.println("defaulting to 'time'");
-            heuristicSelection = "time";
-        }
+
         System.out.println("Enter a starting airport (three letter code). Example: JFK");
 
         String temp = userParams.nextLine();
@@ -39,15 +29,17 @@ public class Main {
         String userStartID = temp.isEmpty() ? "1105703": AirportList.getAirportId(temp).toString();
         System.out.println("Enter a destination airport (three letter code). Example: LAX");
 
-
         temp = userParams.nextLine();
         if(temp.isEmpty()){
             System.out.println("defaulting to airport id: " + AirportList.getAirportCode(1104203));
         }
         String userDestID = temp.isEmpty() ? "1104203" : AirportList.getAirportId(temp).toString();
 
+        System.out.println("Enter search range in days (1-30; default 31). January 31st just before midnight is the cut off point for departures.");
+        temp = userParams.nextLine();
+        String range = temp.isEmpty() ? "50" : temp;
 
-        System.out.println("Enter a day(00-30). Our dataset only includes data for the month of January 2017.");
+        System.out.println("Enter a start day(00-31). Our dataset only includes data for the month of January 2017.");
         String userStartDate = userParams.nextLine();//"2017-01-03";
         if(userStartDate.isEmpty()){
             System.out.println("defaulting to 2017-01-01");
@@ -55,8 +47,10 @@ public class Main {
         } else {
             userStartDate = "2017-01-" + userStartDate;
         }
+
+
         userParams.close();
-        return "dataset/original/On_Time_On_Time_Performance_2017_1.csv " + userStartDate + " " + userStartID + " " + userDestID + " " + heuristicSelection;
+        return "dataset/original/On_Time_On_Time_Performance_2017_1.csv " + userStartDate + " " + userStartID + " " + userDestID + " " + range;
     }
 
     public static void main(String[] args) {
@@ -74,31 +68,29 @@ public class Main {
         });
 
         args = userInput().split(" ");
-        String dataSetName = "";
+        //String dataSetName = "";
         String user_input = "";
         int airport_A_id = 0;
         int airport_B_id = 0;
+        int range = 0;
         try {
-            dataSetName = args[0];
+            //dataSetName = args[0];
             user_input = args[1];
             airport_A_id = Integer.parseInt(args[2]);
             airport_B_id = Integer.parseInt(args[3]);
-            if (args[4].equals("time")) {
-                heuristicType = HeuristicType.USE_TIME;
-            } else {
-                heuristicType = HeuristicType.USE_PRICE;
-            }
+            range = Integer.parseInt(args[4]);
         } catch (Exception e) {
             System.out.println("Invalid arguments provided");
             e.printStackTrace();
-            System.exit(0);
+            System.exit(1);
         }
 
         DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         LocalDate start = LocalDate.parse(user_input, format);
 
         System.out.println();
-        B.PrintRuntimeOfThisCode("Sorting data took: ", () -> data.buildMapFromArray(Objects.requireNonNull(unsortedRef.get()), start));
+        int finalRange = range;
+        B.PrintRuntimeOfThisCode("Sorting data took: ", () -> data.buildMapFromArray(Objects.requireNonNull(unsortedRef.get()), start, finalRange));
 
         System.out.println();
         final int A_id = airport_A_id;
@@ -114,7 +106,7 @@ public class Main {
                         n = n.parent;
                     } while (n != null);
                     for (int i = path.size() - 1; i >= 0; --i) {
-                        System.out.print(path.get(i));
+                        System.out.println(path.get(i));
                     }
                 }
             } catch (Exception e) {
@@ -159,10 +151,8 @@ public class Main {
     public static Node findPath(int A, int B, LocalDate start) throws Exception {
         PriorityQueue<Node> open_list = new PriorityQueue<>();
         HashSet<Flight> closed_list = new HashSet<>();
-        long heuristic = 0;
-        long layover = 0;
 
-        Node current_node = new Node(A, null, null, data.getAllFlights(A, start), 0);
+        Node current_node = new Node(A, null, null, data.getAllFlights(A), 0, 0);
         do {
             // current outgoing flight
             Flight this_flight = current_node.getThisFlight();
@@ -171,7 +161,8 @@ public class Main {
                 // new outgoing flight
                 Flight next_flight = current_node.getNextFlight(i);
                 if (!closed_list.contains(next_flight)) {
-
+                    long time_cost = 0;
+                    long layover = 0;
                     if (this_flight != null) {
                         var edge_A_side = this_flight.getArrivalDateTime();
                         var edge_B_side = next_flight.getDepartureDateTime();
@@ -179,17 +170,8 @@ public class Main {
                     } else if(next_flight.getDestinationAirportId() == B){
                         continue;
                     }
-                    switch(heuristicType){
-                        case USE_TIME:
-                            heuristic = layover + next_flight.getFlightTime();
-                            break;
-                        case USE_PRICE:
-                            heuristic = (long) next_flight.getTicketPrice();
-                            break;
-                        default:
-                            heuristic = Long.MIN_VALUE;
-                    }
-                    Node n = new Node(next_flight.getDestinationAirportId(), current_node, next_flight, data.getNextFlights(next_flight), heuristic);
+                    time_cost = layover + next_flight.getFlightTime();
+                    Node n = new Node(next_flight.getDestinationAirportId(), current_node, next_flight, data.getNextFlights(next_flight), time_cost, next_flight.getTicketPrice());
                     if (!open_list.contains(n)) {
                         open_list.add(n);
                     }

@@ -9,9 +9,10 @@ import java.util.Random;
 public class Flight implements Comparable<Flight>{
     private static final DateTimeFormatter departure_format = DateTimeFormatter.ofPattern("yyyy-MM-dd Hmm");
     private static final DateTimeFormatter time_format = DateTimeFormatter.ofPattern("Hmm");
+    private static final Random random = new Random();
 
     private String flightName;
-    private double ticketPrice;
+    private long ticketPrice;
     private int flightTime; // minutes
     private int distance; // miles
 
@@ -40,7 +41,7 @@ public class Flight implements Comparable<Flight>{
         if(delta > 0){
             arrTime.insert(0,delta == 2 ? "00" : "0");
         }
-        String fliTime = dataRow[51];
+        String fliTime = dataRow[50];
         String dist = dataRow[54];
         String fliName = dataRow[8] + dataRow[10];
         try {
@@ -58,21 +59,29 @@ public class Flight implements Comparable<Flight>{
 
             departureDateTime = LocalDateTime.parse(deptTime, departure_format);
             flightTime = Integer.parseInt(fliTime);
-            LocalDateTime arrival_time = departureDateTime.plusMinutes(flightTime);
+            int h = flightTime / 60;
+            int m = flightTime - (h * 60);
+            LocalDateTime arrival_time = departureDateTime.plusMinutes(m);
+            arrival_time = arrival_time.plusHours(h);
             LocalTime local_arrival_time = LocalTime.parse(arrTime, time_format);
             int timezone_offset_hours = local_arrival_time.getHour() - arrival_time.getHour();
             int timezone_offset_minutes = local_arrival_time.getMinute() - arrival_time.getMinute();
             timezoneOffset = timezone_offset_minutes + (timezone_offset_hours * 60);
+            //dealing with timezones and INCORRECT DATA ENTRY, without knowing the actual timezones..
+            if(Math.abs(timezoneOffset) < 12){
+                arrival_time = arrival_time.plusMinutes(timezoneOffset);
+            } else {
+                timezoneOffset = 0;
+            }
             arrivalDateTime = arrival_time
-                    .plusMinutes(timezoneOffset)
                     .withHour(local_arrival_time.getHour())
                     .withMinute(local_arrival_time.getMinute());
 
             distance = Integer.parseInt(dist);
-            ticketPrice = makeTicketPrice(distance);
+            ticketPrice = makeTicketPrice();
             flightName = fliName;
         } catch (Exception e){
-            e.printStackTrace();
+            System.out.println(e.getMessage());
         }
     }
 
@@ -112,17 +121,27 @@ public class Flight implements Comparable<Flight>{
         return arrivalDateTime;
     }
 
-    private double makeTicketPrice(int distanceInMiles){
-        Random random = new Random();
-
-        //A variable normally distributed about 1 with std 0.02
-        double normalDistribution = (0.02*random.nextGaussian())+1;
-
-        if(normalDistribution<0)
-            normalDistribution = 1;
-        return 50+0.11*distanceInMiles*normalDistribution;
+    private static double lerp(double v0, double v1, double alpha){
+        double min = Math.min(v0,v1);
+        double max = Math.max(v0,v1);
+        return Math.min(max,Math.max(min,min + (alpha * (max-min))));
     }
-    public double getTicketPrice(){ return this.ticketPrice;}
+    public static double clamp(double v, double min, double max){
+        return Math.min(max,Math.max(min,v));
+    }
+
+    private long makeTicketPrice(){
+        double base_cost = 37;
+        double time_of_day = departureDateTime.getHour() / 24.0;
+        double peak = 14 / 24.0;
+        double th = 1 - Math.abs(peak-time_of_day);
+        th =  clamp(1.25*th,0,1);
+        double min = 0.11*distance;
+        double max = 0.20*distance;
+        //A variable normally distributed about 1 with std 0.02
+        return (long)(base_cost + lerp(min,max,th) + (th*7*random.nextGaussian()));
+    }
+    public long getTicketPrice(){ return this.ticketPrice;}
 
     //Flights will be ordered lowest to highest originAirportId, then by departureTime
     public int compareTo(Flight other) {
@@ -130,13 +149,14 @@ public class Flight implements Comparable<Flight>{
     }
 
     public String toString(){
-        return String.format("%-8s {origin: %s; destination: %s; ticket price %6.2f; departure: %s; flight time: %3d minutes}",
+        return String.format("%-8s {departure: %s; ticket price: %4s; origin: %s; destination: %s; flight time: %3d minutes; distance: %4d}",
                 flightName,
+                departureDateTime,
+                "$" + ticketPrice,
                 AirportList.getAirportCode(originAirportId),
                 AirportList.getAirportCode(destinationAirportId),
-                ticketPrice,
-                departureDateTime,
-                flightTime);
+                flightTime,
+                distance);
     }
 
     @Override
