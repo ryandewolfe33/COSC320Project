@@ -26,12 +26,15 @@ public class FlightList {
     }
 
     public SortedSet<Flight> getNextFlights(Flight arrival) {
-        int arrID = arrival.getDestinationAirportId();
         Flight f1 = new Flight();
         Flight f2 = new Flight();
         f1.setDepartureDateTime(arrival.getArrivalDateTime());
         f2.setDepartureDateTime(f1.getDepartureDateTime().plusHours(40));
-        return flights.get(arrID).subSet(f1,f2);
+        var airport = flights.get(arrival.getDestinationAirportId());
+        if(airport != null) {
+            return airport.subSet(f1, f2);
+        }
+        return null;
     }
 
     private void DebugSet(SortedSet<Flight> flights){

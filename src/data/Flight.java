@@ -145,6 +145,12 @@ public class Flight implements Comparable<Flight>{
 
     //Flights will be ordered lowest to highest originAirportId, then by departureTime
     public int compareTo(Flight other) {
+        if(departureDateTime.equals(other.departureDateTime)){
+            if(ticketPrice == other.ticketPrice){
+                return Integer.compare(flightTime, other.flightTime);
+            }
+            return Long.compare(ticketPrice, other.ticketPrice);
+        }
         return departureDateTime.compareTo(other.departureDateTime);
     }
 
@@ -168,7 +174,9 @@ public class Flight implements Comparable<Flight>{
         return originAirportId == flight.originAirportId
                 && destinationAirportId == flight.destinationAirportId
                 && departureDateTime.equals(flight.departureDateTime)
-                && arrivalDateTime.equals(flight.arrivalDateTime);
+                && arrivalDateTime.equals(flight.arrivalDateTime)
+                && flightTime == flight.flightTime
+                && ticketPrice == flight.ticketPrice;
     }
 
     @Override

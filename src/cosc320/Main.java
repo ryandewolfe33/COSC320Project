@@ -171,9 +171,12 @@ public class Main {
                         continue;
                     }
                     time_cost = layover + next_flight.getFlightTime();
-                    Node n = new Node(next_flight.getDestinationAirportId(), current_node, next_flight, data.getNextFlights(next_flight), time_cost, next_flight.getTicketPrice());
-                    if (!open_list.contains(n)) {
-                        open_list.add(n);
+                    var next_next_flights = data.getNextFlights(next_flight);
+                    if(next_next_flights != null) {
+                        Node n = new Node(next_flight.getDestinationAirportId(), current_node, next_flight, next_next_flights, time_cost, next_flight.getTicketPrice());
+                        if (!open_list.contains(n)) {
+                            open_list.add(n);
+                        }
                     }
                 }
             }
