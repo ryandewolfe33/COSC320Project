@@ -16,7 +16,7 @@ public class AlgorithmB {
     public static Node findPath(int A, int B, FlightList data) throws Exception {
         Node current_node = new Node(A, null, null, data.getAllFlights(A), 0, 0);
         Stack<Node> stack = new Stack<>();
-        HashSet<Integer> visited = new HashSet<>();
+        HashSet<Integer> visited = new HashSet<>(); //TODO: change to ensure airports are visited once per path and flights are taken once globally
         stack.push(current_node);
         do {
             current_node = stack.pop();
