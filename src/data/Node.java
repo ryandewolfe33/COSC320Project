@@ -1,7 +1,5 @@
 package data;
 
-import java.util.ArrayList;
-import java.time.temporal.ChronoUnit;
 import java.util.SortedSet;
 
 public class Node implements Comparable<Node> {
@@ -9,14 +7,18 @@ public class Node implements Comparable<Node> {
     private Flight last_flight = null;
     public final int airport_id;
     private SortedSet<Flight> next_flights = null;
-    private long heuristic;
+    private final long f;
+    private final long g;
+    private final long h;
 
-    public Node(int airport_id, Node parent, Flight connecting_flight, SortedSet<Flight> next_flights, long heuristic){
+    public Node(int airport_id, Node parent, Flight connecting_flight, SortedSet<Flight> next_flights, long time, long price){
         this.parent = parent;
         this.last_flight = connecting_flight;
         this.airport_id = airport_id;
         this.next_flights = next_flights;
-        this.heuristic = heuristic + (parent != null ? parent.heuristic : 0);
+        this.g = time + (parent != null ? parent.g : 0);
+        this.h = price + (parent != null ? parent.h : 0);
+        this.f = g+h;
     }
 
     public Flight getThisFlight(){
@@ -49,16 +51,19 @@ public class Node implements Comparable<Node> {
 
     @Override
     public int compareTo(Node o) {
-        if(heuristic == o.heuristic){
-            return last_flight.compareTo(o.last_flight);
+        if(f == o.f){
+            if(h == o.h){
+                return Long.compare(g, o.g);
+            }
+            return Long.compare(h, o.h);
         }
-        return Long.compare(heuristic, o.heuristic);
+        return Long.compare(f, o.f);
     }
 
     @Override
     public String toString() {
         if(last_flight != null) {
-            return String.format("%s [Heuristic: %4d]\n", last_flight, heuristic);
+            return String.format("%s\n\t\t [f: %4d; time: %4d minutes; price: %5s]\n", last_flight, f, g, "$" + h);
         }
         return "";
     }
