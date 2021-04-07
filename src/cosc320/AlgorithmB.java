@@ -32,12 +32,12 @@ public class AlgorithmB {
                 }
             }
             if (current_node.airport_id == B) {
-                //TODO: add path to list
+                //TODO: save path if it's cheaper than present saved path or present path is null
             } else if (current_node == null) {
                 throw new Exception("Cannot find a path. There appears to be either an issue with the algorithm, or the data.");
             }
         } while (!stack.isEmpty());
-        //TODO: search for shortest/cheapest route from list of paths
+        //TODO: return the saved path
         return current_node;
     }
 }
