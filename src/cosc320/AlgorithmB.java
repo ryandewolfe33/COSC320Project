@@ -18,24 +18,26 @@ public class AlgorithmB {
         Stack<Node> stack = new Stack<>();
         HashSet<Integer> visited = new HashSet<>();
         stack.push(current_node);
-        //TODO: implement value tracking. implement paths such that the returned node is the final node from the cheapest path.
         do {
             current_node = stack.pop();
             visited.add(current_node.airport_id);
-            for(Flight f : data.getAllFlights(current_node.airport_id)){
-                if (!visited.contains(f.getDestinationAirportId())){
+            for (Flight f : data.getAllFlights(current_node.airport_id)) {
+                if (!visited.contains(f.getDestinationAirportId())) {
                     stack.push(new Node(f.getDestinationAirportId(),
                             current_node,
                             f,
                             data.getAllFlights(f.getDestinationAirportId()),
-                            0,
+                            0,  //TODO: Add correct time/price values
                             0));
                 }
             }
-            if (current_node == null) {
+            if (current_node.airport_id == B) {
+                //TODO: add path to list
+            } else if (current_node == null) {
                 throw new Exception("Cannot find a path. There appears to be either an issue with the algorithm, or the data.");
             }
         } while (!stack.isEmpty());
+        //TODO: search for shortest/cheapest route from list of paths
         return current_node;
     }
 }
