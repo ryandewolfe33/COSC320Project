@@ -13,37 +13,35 @@ public class AlgorithmA {
 
     public AlgorithmA(){}
 
-    public static Node findPath(int A, int B, LocalDate start, FlightList data, Boolean heuristic) throws Exception {
+    public static Node findPath(int A, int B, FlightList data) throws Exception {
         PriorityQueue<Node> open_list = new PriorityQueue<>();
         HashSet<Flight> closed_list = new HashSet<>();
-        long heuristicValue;
-        long layover = 0;
 
-        Node current_node = new Node(A, null, null, data.getAllFlights(A, start), layover);
+        Node current_node = new Node(A, null, null, data.getAllFlights(A), 0, 0);
         do {
             // current outgoing flight
-            closed_list.add(current_node.getThisFlight());
+            Flight this_flight = current_node.getThisFlight();
+            closed_list.add(this_flight);
             for (int i = 0; i < current_node.getNumNextFlights(); ++i) {
                 // new outgoing flight
-                Flight outgoing_flight = current_node.getNextFlight(i);
-                if (!closed_list.contains(outgoing_flight)) {
-                    if (current_node.getThisFlight() != null) {
-                        var edge_A_side = current_node.getThisFlight().getArrivalDateTime();
-                        var edge_B_side = outgoing_flight.getDepartureDateTime();
-                        layover = ChronoUnit.MINUTES.between(edge_A_side, edge_B_side);
-                    } else {
-                        var edge_A_side = start.atStartOfDay();
-                        var edge_B_side = outgoing_flight.getDepartureDateTime();
-                        layover = ChronoUnit.MINUTES.between(edge_A_side, edge_B_side);
+                Flight next_flight = current_node.getNextFlight(i);
+                if (!closed_list.contains(next_flight)) {
+                    long time_cost = 0;
+                    long layover = 0;
+                    if (this_flight != null) {
+                        var edge_A_side = this_flight.getArrivalDateTime();
+                        var edge_B_side = next_flight.getDepartureDateTime();
+                        layover = ChronoUnit.MINUTES.between(edge_A_side, edge_B_side) - this_flight.getTimezoneOffset();
+                    } else if(next_flight.getDestinationAirportId() == B){
+                        continue;
                     }
-                    if (heuristic) {
-                        heuristicValue = layover + outgoing_flight.getFlightTime();
-                    } else {
-                        heuristicValue = (long) outgoing_flight.getTicketPrice();
-                    }
-                    Node n = new Node(outgoing_flight.getDestinationAirportId(), current_node, outgoing_flight, data.getNextFlights(outgoing_flight), heuristicValue);
-                    if (!open_list.contains(n)) {
-                        open_list.add(n);
+                    time_cost = layover + next_flight.getFlightTime();
+                    var next_next_flights = data.getNextFlights(next_flight);
+                    if(next_next_flights != null) {
+                        Node n = new Node(next_flight.getDestinationAirportId(), current_node, next_flight, next_next_flights, time_cost, next_flight.getTicketPrice());
+                        if (!open_list.contains(n)) {
+                            open_list.add(n);
+                        }
                     }
                 }
             }
