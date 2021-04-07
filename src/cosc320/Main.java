@@ -15,6 +15,10 @@ public class Main {
 
     private static FlightList data = new FlightList();
 
+    //"dataset/original/On_Time_On_Time_Performance_2017_1.csv"
+    // Use this to set the path to the dataset leave date originairportid destinationairportid
+    final static String relativeFilePath = "dataset/original/10000_flight_data.csv";
+
     public static String userInput() {
         Scanner userParams = new Scanner(System.in);
         System.out.println("Presently, the dataset has American domestic travel only. " +
@@ -54,10 +58,8 @@ public class Main {
     }
 
     public static void main(String[] args) {
-        //"dataset/original/On_Time_On_Time_Performance_2017_1.csv"
-        // Use this to set the path to the dataset leave date originairportid destinationairportid
-        System.out.println("Data must be located (relative to project) at:\n'dataset/original/On_Time_On_Time_Performance_2017_1.csv'");
-        File file = new File("dataset/original/On_Time_On_Time_Performance_2017_1.csv");
+        System.out.println("Data must be located (relative to project) at:\n'dataset/original/(filename)'");
+        File file = new File(relativeFilePath);
         Benchmarker B = new Benchmarker();
         AtomicReference<Flight[]> unsortedRef = new AtomicReference<>();
 
