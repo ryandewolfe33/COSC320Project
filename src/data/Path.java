@@ -3,7 +3,7 @@ package data;
 import java.util.ArrayList;
 import java.util.TreeSet;
 
-public class Path {
+public class Path implements Comparable<Path> {
     TreeSet<Node> nodes = new TreeSet<>();
 
     public Path(Node tail){
@@ -16,6 +16,8 @@ public class Path {
         }
     }
 
+
+
     @Override
     public String toString() {
         String buffer = "";
@@ -23,5 +25,12 @@ public class Path {
             buffer = String.format("%s%s", buffer, n.toString());
         }
         return buffer;
+    }
+
+    @Override
+    public int compareTo(Path o) {
+        Node tail = nodes.last();
+        Node other = o.nodes.last();
+        return tail.compareTo(other);
     }
 }
