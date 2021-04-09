@@ -16,7 +16,7 @@ public class Main {
 
     //"dataset/original/On_Time_On_Time_Performance_2017_1.csv"
     // Use this to set the path to the dataset leave date originairportid destinationairportid
-    final static String relativeFilePath = "dataset/original/10000_flight_data.csv";
+    final static String relativeFilePath = "dataset/original/50000_flight_data.csv";
 
     public static String userInput() {
         Scanner userParams = new Scanner(System.in);
@@ -60,7 +60,8 @@ public class Main {
 
 
         userParams.close();
-        return "dataset/original/On_Time_On_Time_Performance_2017_1.csv " + userStartDate + " " + userStartID + " " + userDestID + " " + range;
+        return "dataset/original/On_Time_On_Time_Performance_2017_1.csv " + userStartDate +
+                " " + userStartID + " " + userDestID + " " + range + " " + algSelect;
     }
 
     public static void main(String[] args) {
@@ -88,7 +89,7 @@ public class Main {
             airport_A_id = Integer.parseInt(args[2]);
             airport_B_id = Integer.parseInt(args[3]);
             range = Integer.parseInt(args[4]);
-            alg = args[6];
+            alg = args[5];
         } catch (Exception e) {
             System.out.println("Invalid arguments provided");
             e.printStackTrace();

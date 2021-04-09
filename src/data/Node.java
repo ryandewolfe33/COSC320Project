@@ -7,18 +7,18 @@ public class Node implements Comparable<Node> {
     private Flight last_flight = null;
     public final int airport_id;
     private SortedSet<Flight> next_flights = null;
-    private final long f;
-    private final long g;
-    private final long h;
+    private final long totalTimeAndPrice;
+    private final long totalTime;
+    private final long totalPrice;
 
     public Node(int airport_id, Node parent, Flight connecting_flight, SortedSet<Flight> next_flights, long time, long price){
         this.parent = parent;
         this.last_flight = connecting_flight;
         this.airport_id = airport_id;
         this.next_flights = next_flights;
-        this.g = time + (parent != null ? parent.g : 0);
-        this.h = price + (parent != null ? parent.h : 0);
-        this.f = g+h;
+        this.totalTime = time + (parent != null ? parent.totalTime : 0);
+        this.totalPrice = price + (parent != null ? parent.totalPrice : 0);
+        this.totalTimeAndPrice = totalTime + totalPrice;
     }
 
     public Flight getThisFlight(){
@@ -40,6 +40,8 @@ public class Node implements Comparable<Node> {
         return next_flights.size();
     }
 
+    public long getTotalTimeAndPrice(){return totalTimeAndPrice;}
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -51,19 +53,19 @@ public class Node implements Comparable<Node> {
 
     @Override
     public int compareTo(Node o) {
-        if(f == o.f){
-            if(h == o.h){
-                return Long.compare(g, o.g);
+        if(totalTimeAndPrice == o.totalTimeAndPrice){
+            if(totalPrice == o.totalPrice){
+                return Long.compare(totalTime, o.totalTime);
             }
-            return Long.compare(h, o.h);
+            return Long.compare(totalPrice, o.totalPrice);
         }
-        return Long.compare(f, o.f);
+        return Long.compare(totalTimeAndPrice, o.totalTimeAndPrice);
     }
 
     @Override
     public String toString() {
         if(last_flight != null) {
-            return String.format("%s\n\t\t [f: %4d; time: %4d minutes; price: %5s]\n", last_flight, f, g, "$" + h);
+            return String.format("%s\n\t\t [f: %4d; time: %4d minutes; price: %5s]\n", last_flight, totalTimeAndPrice, totalTime, "$" + totalPrice);
         }
         return "";
     }
