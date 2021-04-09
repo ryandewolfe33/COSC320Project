@@ -4,20 +4,24 @@ import java.util.ArrayList;
 import java.util.TreeSet;
 
 public class Path {
-    TreeSet<Flight> nodes = new TreeSet<>();
+    TreeSet<Node> nodes = new TreeSet<>();
 
     public Path(Node tail){
         if (tail != null) {
             Node n = tail;
             do {
-                nodes.add(n.getThisFlight());
+                nodes.add(n);
                 n = n.parent;
-            } while (n.getThisFlight() != null);
+            } while (n != null);
         }
     }
 
     @Override
     public String toString() {
-        return nodes.toString();
+        String buffer = "";
+        for(Node n : nodes){
+            buffer = String.format("%s%s", buffer, n.toString());
+        }
+        return buffer;
     }
 }

@@ -50,7 +50,7 @@ public class Main {
         } else {
             userStartDate = "2017-01-" + userStartDate;
         }
-        System.out.println("Select an algorithm ('A' or 'B'");
+        System.out.println("Select an algorithm ('A' or 'B')");
         String algSelect = userParams.nextLine();//"A";
         if(algSelect.isEmpty()) {
             System.out.println("defaulting to A");
@@ -107,25 +107,16 @@ public class Main {
         final int A_id = airport_A_id;
         final int B_id = airport_B_id;
         final String algorithm = alg;
-        AtomicReference<Node> path_tail = null;
+        AtomicReference<Node> path_tail = new AtomicReference<>();
         bench.PrintRuntimeOfThisCode("Find path took: ", () -> {
             try {
-                AlgorithmA A = new AlgorithmA();
-                AlgorithmB B = new AlgorithmB();
-                if (algorithm.equals("A"))
-                    path_tail.set(A.findPath(A_id, B_id, data));
-                else path_tail.set(B.findPath(A_id, B_id, data));
-                if (path_tail.get() != null) {
-                    Node n = path_tail.get();
-                    ArrayList<Node> path = new ArrayList<>();
-                    do {
-                        path.add(n);
-                        n = n.parent;
-                    } while (n != null);
-                    for (int i = path.size() - 1; i >= 0; --i) {
-                        System.out.println(path.get(i));
-                    }
+                if (algorithm.equals("A")) {
+                    path_tail.set(AlgorithmA.findPath(A_id, B_id, data));
+                } else {
+                    path_tail.set(AlgorithmB.findPath(A_id, B_id, data));
                 }
+                Path p = new Path(path_tail.get());
+                System.out.println(p);
             } catch (Exception e) {
                 e.printStackTrace();
             }
