@@ -6,6 +6,7 @@ import data.Node;
 import data.Path;
 
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.HashSet;
 import java.util.Stack;
 
@@ -66,6 +67,27 @@ public class AlgorithmB {
                     pathNode=current_node;
             }
             return pathNode;
+        }
+            return null;
+        } else {
+            Flight this_flight = current_node.getThisFlight();
+            for (Flight next_flight : (data.getNextFlights(this_flight))) {//TODO: fix broken return logic
+                if (!visited.contains(next_flight.getDestinationAirportId())) {
+                    long time_cost = 0;
+                    long layover = 0;
+                    if (this_flight != null) {
+                        var edge_A_side = this_flight.getArrivalDateTime();
+                        var edge_B_side = next_flight.getDepartureDateTime();
+                        layover = ChronoUnit.MINUTES.between(edge_A_side, edge_B_side) - this_flight.getTimezoneOffset();
+                    } else if (next_flight.getDestinationAirportId() == B) {
+                        continue;
+                    }
+                    time_cost = layover + next_flight.getFlightTime();
+                    Node new_node = new Node(next_flight.getDestinationAirportId(), current_node, next_flight,
+                            data.getNextFlights(next_flight), time_cost, next_flight.getTicketPrice());
+                    return recursive(new_node, visited, data, B);
+                }
+            }
         }
     }
 }
