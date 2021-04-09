@@ -9,7 +9,6 @@ import java.util.HashSet;
 import java.util.Stack;
 
 public class AlgorithmB {
-
     public AlgorithmB() {
     }
 
@@ -22,18 +21,18 @@ public class AlgorithmB {
         do {
             current_node = stack.pop();
             visited.add(current_node.airport_id);
-            for (Flight f : data.getAllFlights(current_node.airport_id)) {
+            for (Flight f : (data.getNextFlights(current_node.getThisFlight()))) {
                 if (!visited.contains(f.getDestinationAirportId())) {
                     stack.push(new Node(f.getDestinationAirportId(),
-                                        current_node,
-                                        f,
-                                        data.getAllFlights(f.getDestinationAirportId()),
-                                        f.getFlightTime(),
-                                        f.getTicketPrice()));
+                            current_node,
+                            f,
+                            data.getNextFlights(f),
+                            f.getFlightTime(),
+                            f.getTicketPrice()));
                 }
             }
             if (current_node.airport_id == B) {
-                if(bestFoundNode == null) {
+                if (bestFoundNode == null) {
                     bestFoundNode = current_node;
                 } else {
                     if (current_node.compareTo(bestFoundNode) < 0)
@@ -44,5 +43,27 @@ public class AlgorithmB {
             }
         } while (!stack.isEmpty());
         return bestFoundNode;
+    }
+
+    private Node recursive(Node current_node, HashSet<Integer> visited, FlightList data, int B) throws Exception {
+        visited.add(current_node.airport_id);
+        if (current_node.airport_id == B) {
+            //loop termination involving paths
+            return current_node;
+        } else if (current_node == null) {
+            throw new Exception("Cannot find a path. There appears to be either an issue with the algorithm, or the data.");
+            return null;
+        } else
+            for (Flight f : (data.getNextFlights(current_node.getThisFlight()))) {//TODO: fix broken return logic
+                if (!visited.contains(f.getDestinationAirportId())) {
+                    return recursive(new Node(f.getDestinationAirportId(),
+                            current_node,
+                            f,
+                            data.getNextFlights(f),
+                            f.getFlightTime(),
+                            f.getTicketPrice()), visited, data, B);
+                }
+            }
+
     }
 }
