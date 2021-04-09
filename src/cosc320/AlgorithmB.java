@@ -54,7 +54,7 @@ public class AlgorithmB {
         } else if (current_node == null) {
             throw new Exception("Cannot find a path. There appears to be either an issue with the algorithm, or the data.");
         } else {
-            Node pathNode = null;
+            Node bestNode = null;
             Flight this_flight = current_node.getThisFlight();
             long time_cost = 0;
             long layover = 0;
@@ -68,12 +68,12 @@ public class AlgorithmB {
                 }
                 time_cost = layover + next_flight.getFlightTime();
                 if (!visited.contains(next_flight.getDestinationAirportId()) &&
-                        new Path(recursive(new Node(
+                        (new Path(recursive(new Node(
                                         next_flight.getDestinationAirportId(), current_node, next_flight, data.getNextFlights(next_flight), time_cost, next_flight.getTicketPrice()),
-                                visited, data, B)).compareTo(new Path(pathNode)) < 0)
-                    pathNode = current_node;
+                                visited, data, B)).compareTo(new Path(bestNode)) < 0 || bestNode == null))
+                    bestNode = current_node;
             }
-            return pathNode;
+            return bestNode;
         }
     }
 }
