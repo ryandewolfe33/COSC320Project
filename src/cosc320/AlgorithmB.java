@@ -50,7 +50,8 @@ public class AlgorithmB {
     }
 
     private void recursive(Node current_node, FlightList data, int B) throws Exception {
-        if (new Path(current_node).getLength() >= 10) {
+        Path route = new Path(current_node);
+        if (route.getLength() >= 10) {
             if (current_node.airport_id == B) {
                paths.add(new Path(current_node));
             } else if (current_node == null) {
@@ -68,7 +69,7 @@ public class AlgorithmB {
                         continue;
                     }
                     time_cost = layover + next_flight.getFlightTime();
-                    if (new Path(current_node).contains(next_flight.getDestinationAirportId()))
+                    if (route.contains(next_flight.getDestinationAirportId()))
                         recursive(new Node(
                                         next_flight.getDestinationAirportId(),
                                         current_node,
