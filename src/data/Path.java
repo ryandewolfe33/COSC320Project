@@ -6,11 +6,11 @@ import java.util.TreeSet;
 public class Path implements Comparable<Path> {
     TreeSet<Node> nodes = new TreeSet<>();
     HashSet<Integer> airports = new HashSet<>();
-    Node header = null;
+    Node last = null;
 
     public Path(Node tail) {
         if (tail != null) {
-            header = tail;
+            last = tail;
             Node n = tail;
             do {
                 nodes.add(n);
@@ -24,14 +24,13 @@ public class Path implements Comparable<Path> {
         return nodes.size();
     }
 
-    public Node getHeader() {
-        return header;
+    public Node getTail() {
+        return last;
     }
 
     public boolean contains(int airportID) {
-        if (airports.contains(airportID))
-            return true;
-        else return false;
+        return airports.contains(airportID);
+
     }
 
 

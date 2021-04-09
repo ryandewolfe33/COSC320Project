@@ -17,7 +17,7 @@ public class AlgorithmB {
     public static Node findPath(int A, int B, FlightList data) throws Exception {
         Node start_node = new Node(A, null, null, data.getAllFlights(A), 0, 0);
         recursive(start_node, data, B);
-        return paths.first().getHeader();
+        return paths.first().getTail();
     }
 
     private static void recursive(Node current_node, FlightList data, int B) throws Exception {
