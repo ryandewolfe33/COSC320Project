@@ -50,16 +50,15 @@ public class AlgorithmB {
     private Node recursive(Node current_node, HashSet<Integer> visited, FlightList data, int B) throws Exception {
         visited.add(current_node.airport_id);
         if (current_node.airport_id == B) {
-            //loop termination involving paths
             return current_node;
         } else if (current_node == null) {
             throw new Exception("Cannot find a path. There appears to be either an issue with the algorithm, or the data.");
         } else {
             Node pathNode = null;
             Flight this_flight = current_node.getThisFlight();
+            long time_cost = 0;
+            long layover = 0;
             for (Flight next_flight : (data.getNextFlights(current_node.getThisFlight()))) {
-                long time_cost = 0;
-                long layover = 0;
                 if (this_flight != null) {
                     var edge_A_side = this_flight.getArrivalDateTime();
                     var edge_B_side = next_flight.getDepartureDateTime();
@@ -70,9 +69,9 @@ public class AlgorithmB {
                 time_cost = layover + next_flight.getFlightTime();
                 if (!visited.contains(next_flight.getDestinationAirportId()) &&
                         new Path(recursive(new Node(
-                                next_flight.getDestinationAirportId(), current_node, next_flight, data.getNextFlights(next_flight), time_cost, next_flight.getTicketPrice()),
-                                visited, data, B)).compareTo(new Path(pathNode))==-1)
-                    pathNode=current_node;
+                                        next_flight.getDestinationAirportId(), current_node, next_flight, data.getNextFlights(next_flight), time_cost, next_flight.getTicketPrice()),
+                                visited, data, B)).compareTo(new Path(pathNode)) < 0)
+                    pathNode = current_node;
             }
             return pathNode;
         }
