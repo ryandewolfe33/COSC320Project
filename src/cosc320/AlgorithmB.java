@@ -3,6 +3,7 @@ package cosc320;
 import data.Flight;
 import data.FlightList;
 import data.Node;
+import data.Path;
 
 import java.time.LocalDate;
 import java.util.HashSet;
@@ -52,18 +53,19 @@ public class AlgorithmB {
             return current_node;
         } else if (current_node == null) {
             throw new Exception("Cannot find a path. There appears to be either an issue with the algorithm, or the data.");
-            return null;
-        } else
+        } else {
+            Node pathNode = null;
             for (Flight f : (data.getNextFlights(current_node.getThisFlight()))) {//TODO: fix broken return logic
-                if (!visited.contains(f.getDestinationAirportId())) {
-                    return recursive(new Node(f.getDestinationAirportId(),
-                            current_node,
-                            f,
-                            data.getNextFlights(f),
-                            f.getFlightTime(),
-                            f.getTicketPrice()), visited, data, B);
-                }
+                if (!visited.contains(f.getDestinationAirportId()) &&
+                        new Path(recursive(new Node(f.getDestinationAirportId(),
+                        current_node,
+                        f,
+                        data.getNextFlights(f),
+                        f.getFlightTime(),
+                        f.getTicketPrice()), visited, data, B)).compareTo(new Path(pathNode))==-1)
+                    pathNode=current_node;
             }
-
+            return pathNode;
+        }
     }
 }
