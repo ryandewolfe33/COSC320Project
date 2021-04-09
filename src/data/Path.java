@@ -15,7 +15,9 @@ public class Path implements Comparable<Path> {
             } while (n != null);
         }
     }
-
+    public int getLength(){
+        return nodes.size();
+    }
 
 
     @Override

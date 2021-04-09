@@ -50,7 +50,11 @@ public class AlgorithmB {
     private Node recursive(Node current_node, HashSet<Integer> visited, FlightList data, int B) throws Exception {
         visited.add(current_node.airport_id);
         if (current_node.airport_id == B) {
-            return current_node;
+            if (new Path(current_node).getLength() >= 10) {
+                return null;
+            } else {
+                return current_node;
+            }
         } else if (current_node == null) {
             throw new Exception("Cannot find a path. There appears to be either an issue with the algorithm, or the data.");
         } else {
