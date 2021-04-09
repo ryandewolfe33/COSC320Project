@@ -15,6 +15,12 @@ We began by defining a Flight class for each row in our dataset. It contains imp
 ## Results. 
 As mentioned in our Unexpected Cases, we did not have time to create appropriate samples, so we did not have a range of inputs to test. However, our algorithm did run on the whole dataset in ~2000 milliseconds, which is fairly efficient considering our dataset has 450 thousand entries. We did notice that searching on price took significantly longer. We suspect this is because price is a weaker heuristic value compared to time. We believe that this is on track with the O(nm) curve that we expect our algorithm to approach. Most of the work is done in the graph creation step, with lots of sorted lists all taking O(log n) time to create and sort.
 
+### New as of April 8th
+We have had time to test the algorithm using sample datasets of various sizes, and these are the results.
+![](Algorithm1Graph.PNG)
+
+As the graph shows, the algorithm runs in O(nlogn) time as we showed in milestone 1. While there was a significant jump in the time from 300 thousand to 350000 flights, the sample with 400 thousand flights took barely longer, and we are confident that this will stay under the provided nlogn time. 
+
 ## Unexpected Cases/Difficulties. 
 Our dataset had no cost field. This was resolved by creating a cost function to simulate the cost of tickets. However, due to the inherient properties of random variables, right now any ticket price, however unlikely, could be possible. This was resolved by putting a lower bound on the normal distributions, it cannot be negative. 
 
