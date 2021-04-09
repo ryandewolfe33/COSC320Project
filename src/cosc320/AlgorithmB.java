@@ -14,18 +14,18 @@ public class AlgorithmB {
     public AlgorithmB() {
     }
 
-    public static Node findPath(int A, int B, FlightList data) throws Exception {
-        Node start_node = new Node(A, null, null, data.getAllFlights(A), 0, 0);
-        recursive(start_node, data, B);
+    public static Node findPath(int start, int dest, FlightList data) throws Exception {
+        Node start_node = new Node(start, null, null, data.getAllFlights(start), 0, 0);
+        recursive(start_node, data, dest);
         return paths.first().getTail();
     }
 
-    private static void recursive(Node current_node, FlightList data, int B) throws Exception {
+    private static void recursive(Node current_node, FlightList data, int dest) throws Exception {
         if (current_node == null)
             throw new Exception("Cannot find a path. There appears to be either an issue with the algorithm, or the data.");
         Path route = new Path(current_node);
         if (route.getLength() >= 10) {
-            if (current_node.airport_id == B) {
+            if (current_node.airport_id == dest) {
                 paths.add(route);
             } else {
                 Flight this_flight = current_node.getThisFlight();
@@ -36,7 +36,7 @@ public class AlgorithmB {
                         var edge_A_side = this_flight.getArrivalDateTime();
                         var edge_B_side = next_flight.getDepartureDateTime();
                         layover = ChronoUnit.MINUTES.between(edge_A_side, edge_B_side) - this_flight.getTimezoneOffset();
-                    } else if (next_flight.getDestinationAirportId() == B) {
+                    } else if (next_flight.getDestinationAirportId() == dest) {
                         continue;
                     }
                     time_cost = layover + next_flight.getFlightTime();
@@ -48,7 +48,7 @@ public class AlgorithmB {
                                         data.getNextFlights(next_flight),
                                         time_cost,
                                         next_flight.getTicketPrice()),
-                                data, B);
+                                data, dest);
                 }
             }
         }
