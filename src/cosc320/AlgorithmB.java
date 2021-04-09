@@ -5,62 +5,33 @@ import data.FlightList;
 import data.Node;
 import data.Path;
 
-import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
-import java.util.HashSet;
-import java.util.Stack;
 import java.util.TreeSet;
 
 public class AlgorithmB {
-    private TreeSet<Path> paths = new TreeSet<>();
+    private static TreeSet<Path> paths = new TreeSet<>();
+
     public AlgorithmB() {
     }
 
     public static Node findPath(int A, int B, FlightList data) throws Exception {
-        Node current_node = new Node(A, null, null, data.getAllFlights(A), 0, 0);
-        Stack<Node> stack = new Stack<>();
-        HashSet<Integer> visited = new HashSet<>();//TODO: change to ensure airports are visited once per path and flights are taken once globally
-        Node bestFoundNode = null;
-        stack.push(current_node);
-        do {
-            current_node = stack.pop();
-            visited.add(current_node.airport_id);
-            for (Flight f : (data.getNextFlights(current_node.getThisFlight()))) {
-                if (!visited.contains(f.getDestinationAirportId())) {
-                    stack.push(new Node(f.getDestinationAirportId(),
-                            current_node,
-                            f,
-                            data.getNextFlights(f),
-                            f.getFlightTime(),
-                            f.getTicketPrice()));
-                }
-            }
-            if (current_node.airport_id == B) {
-                if (bestFoundNode == null) {
-                    bestFoundNode = current_node;
-                } else {
-                    if (current_node.compareTo(bestFoundNode) < 0)
-                        bestFoundNode = current_node;
-                }
-            } else if (current_node == null) {
-                throw new Exception("Cannot find a path. There appears to be either an issue with the algorithm, or the data.");
-            }
-        } while (!stack.isEmpty());
-        return bestFoundNode;
+        Node start_node = new Node(A, null, null, data.getAllFlights(A), 0, 0);
+        recursive(start_node, data, B);
+        return paths.first().getHeader();
     }
 
-    private void recursive(Node current_node, FlightList data, int B) throws Exception {
+    private static void recursive(Node current_node, FlightList data, int B) throws Exception {
+        if (current_node == null)
+            throw new Exception("Cannot find a path. There appears to be either an issue with the algorithm, or the data.");
         Path route = new Path(current_node);
         if (route.getLength() >= 10) {
             if (current_node.airport_id == B) {
-               paths.add(new Path(current_node));
-            } else if (current_node == null) {
-                throw new Exception("Cannot find a path. There appears to be either an issue with the algorithm, or the data.");
+                paths.add(route);
             } else {
                 Flight this_flight = current_node.getThisFlight();
                 long time_cost = 0;
                 long layover = 0;
-                for (Flight next_flight : (data.getNextFlights(current_node.getThisFlight()))) {
+                for (Flight next_flight : data.getNextFlights(current_node.getThisFlight())) {
                     if (this_flight != null) {
                         var edge_A_side = this_flight.getArrivalDateTime();
                         var edge_B_side = next_flight.getDepartureDateTime();

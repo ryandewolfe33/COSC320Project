@@ -1,15 +1,16 @@
 package data;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.TreeSet;
 
 public class Path implements Comparable<Path> {
     TreeSet<Node> nodes = new TreeSet<>();
     HashSet<Integer> airports = new HashSet<>();
+    Node header = null;
 
-    public Path(Node tail){
+    public Path(Node tail) {
         if (tail != null) {
+            header = tail;
             Node n = tail;
             do {
                 nodes.add(n);
@@ -18,10 +19,16 @@ public class Path implements Comparable<Path> {
             } while (n != null);
         }
     }
-    public int getLength(){
+
+    public int getLength() {
         return nodes.size();
     }
-    public boolean contains(int airportID){
+
+    public Node getHeader() {
+        return header;
+    }
+
+    public boolean contains(int airportID) {
         if (airports.contains(airportID))
             return true;
         else return false;
@@ -31,7 +38,7 @@ public class Path implements Comparable<Path> {
     @Override
     public String toString() {
         String buffer = "";
-        for(Node n : nodes){
+        for (Node n : nodes) {
             buffer = String.format("%s%s", buffer, n.toString());
         }
         return buffer;
