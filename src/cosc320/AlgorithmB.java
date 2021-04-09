@@ -5,6 +5,7 @@ import data.FlightList;
 import data.Node;
 
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.HashSet;
 import java.util.Stack;
 
@@ -53,17 +54,25 @@ public class AlgorithmB {
         } else if (current_node == null) {
             throw new Exception("Cannot find a path. There appears to be either an issue with the algorithm, or the data.");
             return null;
-        } else
-            for (Flight f : (data.getNextFlights(current_node.getThisFlight()))) {//TODO: fix broken return logic
-                if (!visited.contains(f.getDestinationAirportId())) {
-                    return recursive(new Node(f.getDestinationAirportId(),
-                            current_node,
-                            f,
-                            data.getNextFlights(f),
-                            f.getFlightTime(),
-                            f.getTicketPrice()), visited, data, B);
+        } else {
+            Flight this_flight = current_node.getThisFlight();
+            for (Flight next_flight : (data.getNextFlights(this_flight))) {//TODO: fix broken return logic
+                if (!visited.contains(next_flight.getDestinationAirportId())) {
+                    long time_cost = 0;
+                    long layover = 0;
+                    if (this_flight != null) {
+                        var edge_A_side = this_flight.getArrivalDateTime();
+                        var edge_B_side = next_flight.getDepartureDateTime();
+                        layover = ChronoUnit.MINUTES.between(edge_A_side, edge_B_side) - this_flight.getTimezoneOffset();
+                    } else if (next_flight.getDestinationAirportId() == B) {
+                        continue;
+                    }
+                    time_cost = layover + next_flight.getFlightTime();
+                    Node new_node = new Node(next_flight.getDestinationAirportId(), current_node, next_flight,
+                            data.getNextFlights(next_flight), time_cost, next_flight.getTicketPrice());
+                    return recursive(new_node, visited, data, B);
                 }
             }
-
+        }
     }
 }
