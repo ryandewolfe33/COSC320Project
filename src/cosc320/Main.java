@@ -8,7 +8,6 @@ import java.io.FileReader;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
-import java.time.temporal.ChronoUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class Main {
@@ -17,7 +16,7 @@ public class Main {
 
     //"dataset/original/On_Time_On_Time_Performance_2017_1.csv"
     // Use this to set the path to the dataset leave date originairportid destinationairportid
-    final static String relativeFilePath = "dataset/original/400000_flight_data.csv";
+    final static String relativeFilePath = "dataset/original/On_Time_On_Time_Performance_2017_1.csv";
 
     public static String userInput() {
         Scanner userParams = new Scanner(System.in);
@@ -51,20 +50,28 @@ public class Main {
         } else {
             userStartDate = "2017-01-" + userStartDate;
         }
+        System.out.println("Select an algorithm ('A' or 'B')");
+        String algSelect = userParams.nextLine();//"A";
+        if(algSelect.isEmpty()) {
+            System.out.println("defaulting to A");
+            algSelect = "A";
+        }
+
 
 
         userParams.close();
-        return "dataset/original/On_Time_On_Time_Performance_2017_1.csv " + userStartDate + " " + userStartID + " " + userDestID + " " + range;
+        return "dataset/original/On_Time_On_Time_Performance_2017_1.csv " + userStartDate +
+                " " + userStartID + " " + userDestID + " " + range + " " + algSelect;
     }
 
     public static void main(String[] args) {
         System.out.println("Data must be located (relative to project) at:\n'dataset/original/(filename)'");
         File file = new File(relativeFilePath);
-        Benchmarker B = new Benchmarker();
+        Benchmarker bench = new Benchmarker();
         AtomicReference<Flight[]> unsortedRef = new AtomicReference<>();
 
         System.out.println();
-        B.PrintRuntimeOfThisCode("Loading data took: ", () -> {
+        bench.PrintRuntimeOfThisCode("Loading data took: ", () -> {
             unsortedRef.set(loadFile(file));
             AirportList.printAirports();
         });
@@ -75,12 +82,14 @@ public class Main {
         int airport_A_id = 0;
         int airport_B_id = 0;
         int range = 0;
+        String alg = null;
         try {
             //dataSetName = args[0];
             user_input = args[1];
             airport_A_id = Integer.parseInt(args[2]);
             airport_B_id = Integer.parseInt(args[3]);
             range = Integer.parseInt(args[4]);
+            alg = args[5];
         } catch (Exception e) {
             System.out.println("Invalid arguments provided");
             e.printStackTrace();
@@ -92,25 +101,22 @@ public class Main {
 
         System.out.println();
         int finalRange = range;
-        B.PrintRuntimeOfThisCode("Sorting data took: ", () -> data.buildMapFromArray(Objects.requireNonNull(unsortedRef.get()), start, finalRange));
+        bench.PrintRuntimeOfThisCode("Sorting data took: ", () -> data.buildMapFromArray(Objects.requireNonNull(unsortedRef.get()), start, finalRange));
 
         System.out.println();
         final int A_id = airport_A_id;
         final int B_id = airport_B_id;
-        B.PrintRuntimeOfThisCode("Find path took: ", () -> {
+        final String algorithm = alg;
+        AtomicReference<Node> path_tail = new AtomicReference<>();
+        bench.PrintRuntimeOfThisCode("Find path took: ", () -> {
             try {
-                Node path_tail = findPath(A_id, B_id, start);
-                if (path_tail != null) {
-                    Node n = path_tail;
-                    ArrayList<Node> path = new ArrayList<>();
-                    do {
-                        path.add(n);
-                        n = n.parent;
-                    } while (n != null);
-                    for (int i = path.size() - 1; i >= 0; --i) {
-                        System.out.println(path.get(i));
-                    }
+                if (algorithm.equals("A")) {
+                    path_tail.set(AlgorithmA.findPath(A_id, B_id, data));
+                } else {
+                    path_tail.set(AlgorithmB.findPath(A_id, B_id, data));
                 }
+                Path p = new Path(path_tail.get());
+                System.out.println(p);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -149,45 +155,4 @@ public class Main {
         Collections.sort(listOfFlights);
         return listOfFlights.toArray(new Flight[0]);
     }
-
-    public static Node findPath(int A, int B, LocalDate start) throws Exception {
-        PriorityQueue<Node> open_list = new PriorityQueue<>();
-        HashSet<Flight> closed_list = new HashSet<>();
-
-        Node current_node = new Node(A, null, null, data.getAllFlights(A), 0, 0);
-        do {
-            // current outgoing flight
-            Flight this_flight = current_node.getThisFlight();
-            closed_list.add(this_flight);
-            for (int i = 0; i < current_node.getNumNextFlights(); ++i) {
-                // new outgoing flight
-                Flight next_flight = current_node.getNextFlight(i);
-                if (!closed_list.contains(next_flight)) {
-                    long time_cost = 0;
-                    long layover = 0;
-                    if (this_flight != null) {
-                        var edge_A_side = this_flight.getArrivalDateTime();
-                        var edge_B_side = next_flight.getDepartureDateTime();
-                        layover = ChronoUnit.MINUTES.between(edge_A_side, edge_B_side) - this_flight.getTimezoneOffset();
-                    } else if(next_flight.getDestinationAirportId() == B){
-                        continue;
-                    }
-                    time_cost = layover + next_flight.getFlightTime();
-                    var next_next_flights = data.getNextFlights(next_flight);
-                    if(next_next_flights != null) {
-                        Node n = new Node(next_flight.getDestinationAirportId(), current_node, next_flight, next_next_flights, time_cost, next_flight.getTicketPrice());
-                        if (!open_list.contains(n)) {
-                            open_list.add(n);
-                        }
-                    }
-                }
-            }
-            current_node = open_list.poll();
-            if (current_node == null) {
-                throw new Exception("Cannot find a path. There appears to be either an issue with the algorithm, or the data.");
-            }
-        } while (current_node.airport_id != B);
-        return current_node;
-    }
-
 }
