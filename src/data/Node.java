@@ -69,4 +69,11 @@ public class Node implements Comparable<Node> {
         }
         return "";
     }
+
+    @Override
+    public int hashCode() {
+        int result = last_flight != null ? last_flight.hashCode() : 0;
+        result = 31 * result + airport_id;
+        return result;
+    }
 }
