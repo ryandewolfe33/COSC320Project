@@ -15,7 +15,7 @@ Balancing the cost of the time vs the ticket price was challenging. We chose to 
 A larger issue with our brute force algorithm is absolute runtime. We have lots of steps that run in O(n log n) or O(n) time, and with a large dataset these constant amplify and create long runtimes. Our first attempt did not finish running in 15minutes and some calculations show that a DFS through a tree with a large branching factor sush as this one require far too much computing power, even if the theorecital runtime is still O(n^2).
 
 ## Task Separation and Responsibilities. 
-Ryan  
-Josh  
-Mike  
-Liza  
+Ryan - Graphs and Write up
+Josh - Algorithm implementation and debugging 
+Mike - ALgorithm implementation and debugging
+Liza - MIA
