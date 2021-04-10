@@ -26,7 +26,7 @@ public class Node implements Comparable<Node> {
     }
 
     public Flight getNextFlight(int index){
-        if(index < next_flights.size() && index > 0) {
+        if(index < next_flights.size() && index >= 0) {
             int i=0;
             for(Flight f: next_flights)
                 if(i++ == index)

@@ -17,7 +17,7 @@ public class AlgorithmB {
             if (!paths.isEmpty()) {
                 return paths.first().getTail();
             }
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return null;
@@ -27,13 +27,12 @@ public class AlgorithmB {
         if (current_node == null)
             throw new Exception("Cannot find a path. There appears to be either an issue with the algorithm, or the data.");
         Path route = new Path(current_node);
-        if (route.getLength() < 10) {
+        if (route.getLength() <= 4) {
             if (current_node.airport_id != dest) {
                 Flight this_flight = current_node.getThisFlight();
                 for (int i = 0; i < current_node.getNumNextFlights(); ++i) {
                     // new outgoing flight
                     Flight next_flight = current_node.getNextFlight(i);
-                    System.out.println(next_flight);
                     if (!route.contains(next_flight.getDestinationAirportId())) {
                         long time_cost = 0;
                         long layover = 0;
@@ -46,14 +45,16 @@ public class AlgorithmB {
                             continue;
                         }
                         time_cost = layover + next_flight.getFlightTime();
-                        Node node = new Node(next_flight.getDestinationAirportId(), current_node, next_flight,
-                                data.getNextFlights(next_flight), time_cost, next_flight.getTicketPrice());
-                        recursive(paths, node, data, dest);
+                        var next_next_flights = data.getNextFlights(next_flight);
+                        if (next_next_flights != null) {
+                            Node node = new Node(next_flight.getDestinationAirportId(), current_node, next_flight, next_next_flights, time_cost, next_flight.getTicketPrice());
+                            recursive(paths, node, data, dest);
+                        }
                     }
                 }
+            } else {
+                paths.add(route);
             }
-        } else {
-            paths.add(route);
         }
-        }
+    }
 }
