@@ -7,6 +7,7 @@ import data.Node;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.HashSet;
+import java.util.List;
 import java.util.PriorityQueue;
 
 public class AlgorithmA {
@@ -37,9 +38,7 @@ public class AlgorithmA {
                     var next_next_flights = data.getNextFlights(next_flight);
                     if(next_next_flights != null) {
                         Node n = new Node(next_flight.getDestinationAirportId(), current_node, next_flight, next_next_flights, time_cost, next_flight.getTicketPrice());
-                        if (!open_list.contains(n)) {
-                            open_list.add(n);
-                        }
+                        open_list.add(n); //it's a queue, and we have the closed_list, so just pop another on
                     }
                 }
             }
@@ -49,5 +48,14 @@ public class AlgorithmA {
             }
         } while (current_node.airport_id != B);
         return current_node;
+    }
+
+    private static Node getNode(PriorityQueue<Node> q, Node key){
+        for(Node n : q){
+            if(n.equals(key)){
+                return n;
+            }
+        }
+        return null;
     }
 }
