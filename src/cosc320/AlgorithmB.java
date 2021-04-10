@@ -28,7 +28,7 @@ public class AlgorithmB {
     private static void recursive(TreeSet<Path> paths, HashSet<Node> history, Node current_node, FlightList data, int dest) throws Exception {
         if (current_node == null)
             throw new Exception("Cannot find a path. There appears to be either an issue with the algorithm, or the data.");
-        if(history.size() <= 4 && !history.contains(current_node)) {
+        if(history.size() <= 4 && !contains_airport(history,current_node)) {
             history.add(current_node);
             if (current_node.airport_id == dest) {
                 paths.add(new Path(current_node));
@@ -61,5 +61,14 @@ public class AlgorithmB {
             }
             history.remove(current_node);
         }
+    }
+
+    private static boolean contains_airport(HashSet<Node> history, Node node){
+        for(Node n : history){
+            if(n.airport_id == node.airport_id){
+                return true;
+            }
+        }
+        return false;
     }
 }
