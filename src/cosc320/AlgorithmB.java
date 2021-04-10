@@ -14,7 +14,7 @@ public class AlgorithmB {
         try {
             Node start_node = new Node(start, null, null, data.getAllFlights(start), 0, 0);
             TreeSet<Path> paths = new TreeSet<>();
-            HashSet<Node> history = new HashSet<>();
+            HashSet<Integer> history = new HashSet<>();
             recursive(paths, history, start_node, data, dest);
             if (!paths.isEmpty()) {
                 return paths.first().getTail();
@@ -25,14 +25,15 @@ public class AlgorithmB {
         return null;
     }
 
-    private static void recursive(TreeSet<Path> paths, HashSet<Node> history, Node current_node, FlightList data, int dest) throws Exception {
-        if (current_node == null)
+    private static void recursive(TreeSet<Path> paths, HashSet<Integer> history, Node current_node, FlightList data, int dest) throws Exception {
+        if (current_node == null) {
             throw new Exception("Cannot find a path. There appears to be either an issue with the algorithm, or the data.");
-        if(history.size() <= 4 && !contains_airport(history,current_node)) {
-            history.add(current_node);
+        }
+        if(history.size() <= 4 && !history.contains(current_node.airport_id)) {
+            history.add(current_node.airport_id);
             if (current_node.airport_id == dest) {
                 paths.add(new Path(current_node));
-                history.remove(current_node);
+                history.remove(current_node.airport_id);
                 return;
             }
             // current outgoing flight
@@ -54,21 +55,12 @@ public class AlgorithmB {
                 var next_next_flights = data.getNextFlights(next_flight);
                 if (next_next_flights != null) {
                     Node node = new Node(next_flight.getDestinationAirportId(), current_node, next_flight, next_next_flights, time_cost, next_flight.getTicketPrice());
-                    if(!history.contains(node)) {
+                    if(!history.contains(node.airport_id)) {
                         recursive(paths, history, node, data, dest);
                     }
                 }
             }
-            history.remove(current_node);
+            history.remove(current_node.airport_id);
         }
-    }
-
-    private static boolean contains_airport(HashSet<Node> history, Node node){
-        for(Node n : history){
-            if(n.airport_id == node.airport_id){
-                return true;
-            }
-        }
-        return false;
     }
 }
