@@ -10,7 +10,7 @@ We can then take the shortest path from the Treeset, O(1) time, and return this 
 
 ## Unexpected Cases/Difficulties.
 
-THe whoe thing is on fire. IDE's were broken, some did not survive.
+Balancing the cost of the time vs the ticket price was challenging. We chose to solve this problem by assigning a constant conversion ratio, treating 1 dollar equal to 1 minute. OF course, this ratio could be updated with respect to user preferences, or to a company's preference to maximise profits while maintiang reasonable results. This is a problem with no clear solution, but a decision has to be made so we chose 1:1 after a short debate.  
 
 ## Task Separation and Responsibilities. 
 Ryan  
