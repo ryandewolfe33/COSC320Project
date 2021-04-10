@@ -11,8 +11,6 @@ import java.util.PriorityQueue;
 
 public class AlgorithmA {
 
-    public AlgorithmA(){}
-
     public static Node findPath(int A, int B, FlightList data) throws Exception {
         PriorityQueue<Node> open_list = new PriorityQueue<>();
         HashSet<Flight> closed_list = new HashSet<>();
