@@ -16,7 +16,7 @@ public class Main {
 
     //"dataset/original/On_Time_On_Time_Performance_2017_1.csv"
     // Use this to set the path to the dataset leave date originairportid destinationairportid
-    final static String relativeFilePath = "dataset/original/On_Time_On_Time_Performance_2017_1.csv";
+    final static String relativeFilePath = "50000_flight_data.csv";
 
     public static String userInput() {
         Scanner userParams = new Scanner(System.in);
